@@ -1,0 +1,39 @@
+@import "tailwindcss";
+@tailwind utilities;
+
+
+@layer utilities {
+  .select-none {
+    -webkit-touch-callout: none; /* iOS Safari */
+    -webkit-user-select: none; /* Safari, Chrome, Opera, Samsung */
+    -khtml-user-select: none; /* Konqueror HTML */
+    -moz-user-select: none; /* Firefox */
+    -ms-user-select: none; /* IE/Edge */
+    user-select: none; /* Standard */
+  }
+
+  .select-text {
+    user-select: text;
+  }
+
+  .select-all {
+    user-select: all;
+  }
+
+  .select-auto {
+    user-select: auto;
+  }
+}
+
+@plugin 'tailwind-scrollbar' {
+  nocompatible: true;
+  preferredStrategy: 'pseudoelements';
+}
+
+@theme {
+    --color-background: #0A0A0A;
+    --color-foreground: #E1E1E1;
+    --color-tray: #121212;
+    --color-purpleForeground: #6753e6;
+    --color-primaryAccent: #3B82F6;
+  }

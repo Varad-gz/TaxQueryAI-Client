@@ -1,0 +1,27 @@
+{
+  "name": "client-frontend-tqai",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "@tailwindcss/postcss": "^4.0.3",
+    "autoprefixer": "^10.4.20",
+    "formik": "^2.4.6",
+    "next": "15.1.6",
+    "papaparse": "^5.5.2",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "react-icons": "^5.4.0",
+    "yup": "^1.6.1"
+  },
+  "devDependencies": {
+    "postcss": "^8.5.1",
+    "tailwind-scrollbar": "^4.0.0",
+    "tailwindcss": "^4.0.3"
+  }
+}
