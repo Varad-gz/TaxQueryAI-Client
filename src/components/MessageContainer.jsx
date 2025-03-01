@@ -1,18 +1,16 @@
 import React from 'react';
-
 import Message from '@/components/Message';
 
-const MessageContainer = () => {
+const MessageContainer = ({ messages }) => {
     return (
-        <div className='max-w-[60%] flex flex-col items-center overflow-scroll overflow-x-hidden scrollbar-none mt-[-20px]'>
-            <Message>dadasdaas dsafsafas dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd</Message>
-            <Message type={1}>dadasdaas dsafsafas dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd</Message>
-            <Message>dadasdaas dsafsafas dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd</Message>
-            <Message type={1}>dadasdaas dsafsafas dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd</Message>
-            <Message type={1}>dadasdaas dsafsafas dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd</Message>
-            <Message type={1}>dadasdaas dsafsafas dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd</Message>
+        <div className='max-w-[60%] w-full flex flex-col items-start overflow-auto overflow-x-hidden scrollbar-none mt-[-20px]'>
+            {messages.map((msg, index) => (
+                <Message key={index} type={msg.type === 'user' ? 0 : 1}>
+                    {msg.text}
+                </Message>
+            ))}
         </div>
-    )
+    );
 }
 
-export default MessageContainer
+export default MessageContainer;
