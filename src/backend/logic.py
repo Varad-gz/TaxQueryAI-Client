@@ -205,6 +205,18 @@ def get_response(user_query: str, db: SQLDatabase, city: str, property_type: str
     return get_sql_response(user_query, db)
 
 
+def chatbot_response(user_query: str):  # function to return the chatbot_response
+    template = """
+    User: {user_query}
+    AI: Provide the most relevant and concise answer.
+    """
+    template = ChatPromptTemplate.from_template(template)
+    sequence = template | llm  
+    response = sequence.invoke({"user_query": user_query})
+    response_text = response.content.strip()  # removes extra whitespaces
+    return response_text  # return only the content
+
+
 if __name__ == "__main__":
     mysql_uri = mysql_uri_local  # use local database
     db = SQLDatabase.from_uri(mysql_uri)

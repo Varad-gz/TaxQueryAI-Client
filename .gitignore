@@ -44,3 +44,5 @@ next-env.d.ts
 env
 node_modules
 src/backend/secret_key.py
+app_details.txt
+Property Tax Transformation.ipynb

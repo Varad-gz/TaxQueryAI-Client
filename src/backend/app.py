@@ -1,6 +1,6 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
-from logic import extract_query_info, generate_sql_query, give_breakdown, get_response
+from logic import extract_query_info, generate_sql_query, give_breakdown, get_response, chatbot_response
 from langchain_community.utilities import SQLDatabase
 from secret_key import mysql_uri
 import pandas as pd
@@ -78,6 +78,18 @@ def api_get_breakdown():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
     
+
+@app.route('/api/get_ai_response', methods=['POST'])
+def api_get_ai_response():
+    data = request.json
+    user_query = data.get("query", "")
+
+    if not user_query:
+        return jsonify({"response": "Please enter a valid question."})
+
+    ai_response = chatbot_response(user_query)
+    return jsonify({"response": ai_response})
+
 
 if __name__ == '__main__':
     db = get_db()  # initialize the database when the app starts
