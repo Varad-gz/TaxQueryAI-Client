@@ -49,7 +49,7 @@ const CsvViewer = () => {
                     ))}
                 </select>
                 <button onClick={handleDownload} className="ml-[10px] text-[30px]">
-                    <Tooltip text="Download CSV" pos={2}>
+                    <Tooltip text="Download CSV" position="right">
                         <FaFileDownload className='hover:text-primaryAccent hover:scale-110 transition ease-in-out delay-75 cursor-pointer' />
                     </Tooltip>
                 </button>

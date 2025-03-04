@@ -2,37 +2,57 @@
 
 import { useState } from "react";
 
-const Tooltip = ({ text, children, pos, className }) => {
+const Tooltip = ({
+    text,
+    children,
+    position = "right",
+    className = "",
+    delay = 0,
+    arrow = true,
+}) => {
     const [visible, setVisible] = useState(false);
 
-    let ttposition;
-    if (typeof pos !== 'undefined') {
-        switch (pos) {
-            case 1:
-                ttposition = 'bottom-full -left-1/2 mb-[8px]';
-                break;
-            case 3:
-                ttposition = 'top-full -left-1/2 mt-[8px]';
-                break;
-            case 4:
-                ttposition = 'right-full mr-[8px]';
-                break;
-            default:
-                ttposition = 'left-full ml-[8px]';
+    // Map position names to tailwind classes
+    const positionClasses = {
+        top: "bottom-full left-1/2 -translate-x-1/2 mb-2",
+        bottom: "top-full left-1/2 -translate-x-1/2 mt-2",
+        left: "right-full top-1/2 -translate-y-1/2 mr-2",
+        right: "left-full top-1/2 -translate-y-1/2 ml-2",
+    };
+
+    // Get position class or use default
+    const positionClass = positionClasses[position] || positionClasses.right;
+
+    // Arrow classes based on position
+    const arrowClass = arrow ? {
+        top: "after:content-[''] after:absolute after:left-1/2 after:-translate-x-1/2 after:top-full after:border-8 after:border-transparent after:border-t-gray-800",
+        bottom: "after:content-[''] after:absolute after:left-1/2 after:-translate-x-1/2 after:bottom-full after:border-8 after:border-transparent after:border-b-gray-800",
+        left: "after:content-[''] after:absolute after:top-1/2 after:-translate-y-1/2 after:left-full after:border-8 after:border-transparent after:border-l-gray-800",
+        right: "after:content-[''] after:absolute after:top-1/2 after:-translate-y-1/2 after:right-full after:border-8 after:border-transparent after:border-r-gray-800",
+    }[position] : "";
+
+    const handleMouseEnter = () => {
+        if (delay > 0) {
+            setTimeout(() => setVisible(true), delay);
+        } else {
+            setVisible(true);
         }
-    } else {
-        ttposition = 'left-full ml-[8px]';
-    }
+    };
 
     return (
         <div
-            className="relative flex items-center"
-            onMouseEnter={() => setVisible(true)}
+            className={`relative inline-flex ${className}`}
+            onMouseEnter={handleMouseEnter}
             onMouseLeave={() => setVisible(false)}
+            onFocus={handleMouseEnter}
+            onBlur={() => setVisible(false)}
         >
             {children}
             {visible && (
-                <div className={`absolute ${ttposition} left whitespace-nowrap bg-gray-800 text-white text-sm px-[10px] py-[5px] rounded shadow-lg z-[9999] ${className}`}>
+                <div
+                    className={`absolute z-50 px-2 py-1 text-sm text-white bg-gray-800 rounded shadow whitespace-nowrap ${positionClass} ${arrowClass}`}
+                    role="tooltip"
+                >
                     {text}
                 </div>
             )}

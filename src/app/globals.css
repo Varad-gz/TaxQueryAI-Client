@@ -23,6 +23,48 @@
   .select-auto {
     user-select: auto;
   }
+
+  .no-transition * {
+    transition: none !important;
+  }
+
+  /* Expand animation - from bottom-right to top-left */
+@keyframes expand {
+  from {
+    opacity: 0;
+    transform: scale(0);
+    transform-origin: bottom right;
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+    transform-origin: bottom right;
+  }
+}
+
+  /* Shrink animation - from top-left to bottom-right */
+  @keyframes shrink {
+    from {
+      opacity: 1;
+      transform: scale(1);
+      transform-origin: bottom right;
+    }
+    to {
+      opacity: 0;
+      transform: scale(0);
+      transform-origin: bottom right;
+    }
+  }
+
+  /* Animation classes */
+  .animate-expand {
+    animation: expand 0.3s ease-out forwards;
+  }
+
+  .animate-shrink {
+    animation: shrink 0.3s ease-in forwards;
+  }
+
 }
 
 @plugin 'tailwind-scrollbar' {

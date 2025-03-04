@@ -31,7 +31,7 @@ const SecureIframePortal = ({ src }) => {
 
         iframe.src = src;
         iframe.style.width = "100%";
-        iframe.style.height = "100vh";
+        iframe.style.height = `${window.innerHeight - 64}px`;
         iframe.style.border = "none";
         iframe.setAttribute("sandbox", "allow-scripts allow-same-origin");
         iframe.setAttribute("allow", "fullscreen");
@@ -57,7 +57,7 @@ const SecureIframePortal = ({ src }) => {
     return (
         <div>
             {(!isVisible || isLoading) && (
-                <div className="flex justify-center items-center h-screen">
+                <div className="flex justify-center items-center h-[calc(100vh-4rem)]">
                     <div className="w-10 h-10 border-4 border-gray-200 border-t-primaryAccent rounded-full animate-spin"></div>
                 </div>
             )}

@@ -11,15 +11,14 @@ import { MdAutoGraph } from "react-icons/md";
 const Navbar = () => {
     return (
         <>
-            <div className='min-h-screen w-[100px] text-nowrap bg-zinc-900 text-white px-[20px] py-[40px] flex flex-col items-center'>
-                <div className='text-[30px]'>
-                    <Link href='/interact'>TQAI</Link>
+            <div className='min-h-screen w-16 text-nowrap bg-zinc-900 text-white py-[20px] flex flex-col items-center'>
+                <div className='mb-[30px]'>
+                    <Tooltip text="Profile">
+                        <Link href='/profile'>
+                            <div className='w-[40px] h-[40px] rounded-full border-[1px] border-white hover:border-primaryAccent hover:scale-110 transition ease-in-out delay-75'><img src="favicon.ico" alt="" /></div>
+                        </Link>
+                    </Tooltip>
                 </div>
-                <Tooltip text="Profile">
-                    <Link href='/profile' className='w-full my-[30px]'>
-                        <div className='w-[40px] h-[40px] rounded-full border-[1px] border-white hover:border-primaryAccent hover:scale-110 transition ease-in-out delay-75'><img src="favicon.ico" alt="" /></div>
-                    </Link>
-                </Tooltip>
                 <div className='h-full flex flex-col items-center text-[35px]'>
                     <div className='flex flex-col'>
                         <Tooltip text="Analytics Dashboard">

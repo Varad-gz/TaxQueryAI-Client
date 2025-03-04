@@ -1,14 +1,16 @@
-import Navbar from "@/components/Navbar";
+// layout.js
+import NavbarClient from "@/components/NavbarClient";
 
-export default async function NavbarLayout({ children }) {
+export default function NavbarLayout({ children }) {
     return (
-        <div className="flex h-screen">
-            <div className="fixed h-full">
-                <Navbar />
-            </div>
-            <div className="flex-1 overflow-auto ml-[100px] scrollbar-thin scrollbar-thumb-zinc-700">
-                <div id="portal-root"></div>
-                {children}
+        <div className="flex flex-col h-screen overflow-hidden">
+            <NavbarClient />
+            <div className="flex flex-1 overflow-hidden">
+                <div className="hidden md:block w-16" />
+                <div className="flex-1 w-full overflow-auto">
+                    <div id="portal-root"></div>
+                    {children}
+                </div>
             </div>
         </div>
     );
