@@ -1,12 +1,12 @@
 'use client'
 
-import React, { useState, useRef, useEffect } from 'react'
-
+import React, { useState, useRef, useEffect } from 'react';
 import MessageContainer from './MessageContainer';
-import QueryTextBox from './QueryTextBox'
+import QueryTextBox from './QueryTextBox';
 
-const AIChatBot = ({ onSendMessage, messages, loading }) => {
-
+const AIChatBot = () => {
+    const [messages, setMessages] = useState([]);
+    const [loading, setLoading] = useState(false);
     const [queryBoxHeight, setQueryBoxHeight] = useState(44);
     const queryBoxRef = useRef(null);
     const messagesEndRef = useRef(null);
@@ -36,6 +36,34 @@ const AIChatBot = ({ onSendMessage, messages, loading }) => {
         return () => resizeObserver.disconnect();
     }, []);
 
+    const handleSendMessage = async (userMessage) => {
+        if (!userMessage.trim()) return;
+
+        setMessages((prevMessages) => [...prevMessages, { text: userMessage, type: 'user' }]);
+        setLoading(true);
+
+        try {
+            const response = await fetch('http://127.0.0.1:3000/api/get_ai_response', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ query: userMessage }),
+            });
+
+            const data = await response.json();
+            setMessages((prevMessages) => [...prevMessages, { text: data.response, type: 'ai' }]);
+        } catch (error) {
+            console.error("Error fetching AI response:", error);
+            setMessages((prevMessages) => [
+                ...prevMessages,
+                { text: "I couldn't find anything related to that. Can you please rephrase your query?", type: 'ai' }
+            ]);
+        } finally {
+            setLoading(false);
+        }
+    };
+
     return (
         <div className='w-full rounded-lg border-[2px] border-[#EFEFEF] flex flex-col relative h-full'>
             <div className='w-full my-[10px] text-[20px] font-bold flex items-center px-[20px]'>
@@ -57,7 +85,7 @@ const AIChatBot = ({ onSendMessage, messages, loading }) => {
                     <QueryTextBox
                         placeholder="Message AI"
                         type={2}
-                        onSendMessage={onSendMessage}
+                        onSendMessage={handleSendMessage}
                     />
                 </div>
             </div>
@@ -65,4 +93,4 @@ const AIChatBot = ({ onSendMessage, messages, loading }) => {
     );
 };
 
-export default AIChatBot
+export default AIChatBot;
