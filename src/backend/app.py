@@ -93,4 +93,4 @@ def api_get_ai_response():
 
 if __name__ == '__main__':
     db = get_db()  # initialize the database when the app starts
-    app.run(port=3000, debug=True)
+    app.run(host="0.0.0.0", port=8080)
