@@ -2,11 +2,15 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS
 from logic import extract_query_info, generate_sql_query, give_breakdown, get_response, chatbot_response
 from langchain_community.utilities import SQLDatabase
-from secret_key import mysql_uri
+from dotenv import load_dotenv
+import os
 import pandas as pd
 
 app = Flask(__name__)
 CORS(app)  # allows Next.js frontend to access this API
+
+load_dotenv()  # load the environment variables
+mysql_uri = os.getenv("MYSQL_URI")
 
 db = None  # initialize the database connection once
 
