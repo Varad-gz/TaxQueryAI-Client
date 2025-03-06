@@ -4,7 +4,7 @@ export default async function handler(req, res) {
     }
   
     try {
-      const response = await fetch("http://127.0.0.1:3000/api/get_breakdown", {
+      const response = await fetch("https://taxqueryai.onrender.com/api/get_breakdown", {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
