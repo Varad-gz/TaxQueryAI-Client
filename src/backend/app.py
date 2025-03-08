@@ -21,6 +21,10 @@ def get_db():
         db = SQLDatabase.from_uri(mysql_uri)
     return db
 
+@app.route('/')
+def home():
+    return jsonify({"message": "Welcome to TaxQueryAI API"})
+
 @app.route('/api/get_response', methods=['POST'])
 def api_get_response():
     data = request.json
