@@ -67,7 +67,7 @@ const Interact = () => {
         setResponseLoading(true);
 
         try {
-            const response = await fetch('http://127.0.0.1:3000/api/get_sql_query', {
+            const response = await fetch('https://taxqueryai.onrender.com/api/get_sql_query', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ query: previousQuery, last_response: messages[messages.length - 1]?.text }) // Send last AI response
@@ -90,7 +90,7 @@ const Interact = () => {
         setResponseLoading(true);
 
         try {
-            const response = await fetch('http://127.0.0.1:3000/api/get_breakdown', {
+            const response = await fetch('https://taxqueryai.onrender.com/api/get_breakdown', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ query: previousQuery, last_response: messages[messages.length - 1]?.text })
@@ -159,7 +159,7 @@ const Interact = () => {
         setResponseLoading(true);
 
         try {
-            const response = await fetch('http://127.0.0.1:3000/api/get_response', {
+            const response = await fetch('https://taxqueryai.onrender.com/api/get_response', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ query: message })

@@ -1,4 +1,5 @@
-from secret_key import sec_key, mysql_uri_local
+from dotenv import load_dotenv
+import os
 import pandas as pd
 from langchain_community.utilities import SQLDatabase
 from langchain_core.output_parsers import StrOutputParser  # for parsing the output into a string
@@ -7,6 +8,10 @@ from langchain_groq import ChatGroq
 from prediction import train_prediction_model
 from langchain_core.prompts import ChatPromptTemplate
 import re
+
+load_dotenv()  # load the environment variables
+sec_key = os.getenv("GROQ_API_KEY")
+mysql_uri = os.getenv("MYSQL_URI")
 
 model_name1 = "qwen-2.5-32b"  # name of model used
 llm = ChatGroq(
@@ -218,7 +223,7 @@ def chatbot_response(user_query: str):  # function to return the chatbot_respons
 
 
 if __name__ == "__main__":
-    mysql_uri = mysql_uri_local  # use local database
+    mysql_uri = mysql_uri  # use local database
     db = SQLDatabase.from_uri(mysql_uri)
     df = pd.read_csv("D:/TaxQueryAI/datasets/transformed_data/Property-Tax-Erode.csv")  # load tax data
 

@@ -2,11 +2,15 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS
 from logic import extract_query_info, generate_sql_query, give_breakdown, get_response, chatbot_response
 from langchain_community.utilities import SQLDatabase
-from secret_key import mysql_uri
+from dotenv import load_dotenv
+import os
 import pandas as pd
 
 app = Flask(__name__)
 CORS(app)  # allows Next.js frontend to access this API
+
+load_dotenv()  # load the environment variables
+mysql_uri = os.getenv("MYSQL_URI")
 
 db = None  # initialize the database connection once
 
@@ -16,6 +20,10 @@ def get_db():
     if db is None:
         db = SQLDatabase.from_uri(mysql_uri)
     return db
+
+@app.route('/')
+def home():
+    return jsonify({"message": "Welcome to TaxQueryAI API"})
 
 @app.route('/api/get_response', methods=['POST'])
 def api_get_response():
@@ -93,4 +101,4 @@ def api_get_ai_response():
 
 if __name__ == '__main__':
     db = get_db()  # initialize the database when the app starts
-    app.run(port=3000, debug=True)
+    app.run(host="0.0.0.0", port=8080)
