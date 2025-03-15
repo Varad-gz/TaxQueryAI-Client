@@ -3,6 +3,9 @@ import { Space_Grotesk } from 'next/font/google';
 
 import "./globals.css";
 
+import { AuthProvider } from "@/contexts/AuthContext";
+import { ToastContainer } from "react-toastify";
+
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -26,7 +29,19 @@ export default function RootLayout({ children }) {
       <body
         className={`${spaceGrotesk.className} antialiased bg-white text-black box-border scrollbar-thin scrollbar-thumb-zinc-900 scrollbar-track-zinc-700`}
       >
-        {children}
+        <ToastContainer
+          position="top-center"
+          hideProgressBar={false}
+          newestOnTop={false}
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          pauseOnHover
+          autoClose={3000}
+        />
+        <AuthProvider>
+          {children}
+        </AuthProvider>
       </body>
     </html>
   );

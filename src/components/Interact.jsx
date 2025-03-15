@@ -6,6 +6,9 @@ import MessageContainer from '@/components/MessageContainer';
 import AIChatBot from '@/components/AIChatBot';
 import Tooltip from '@/components/Tooltop';
 import { FaBolt } from "react-icons/fa";
+import { motion, AnimatePresence } from 'framer-motion';
+import { SiHelpscout } from "react-icons/si";
+
 
 const Interact = () => {
     const [queryBoxHeight, setQueryBoxHeight] = useState(44);
@@ -14,7 +17,6 @@ const Interact = () => {
     const [lastUserQuery, setLastUserQuery] = useState(null);
     const [responseLoading, setResponseLoading] = useState(false);
     const [isMobile, setIsMobile] = useState(false);
-    const [isAnimating, setIsAnimating] = useState(false);
 
     const queryBoxRef = useRef(null);
     const messagesEndRef = useRef(null);
@@ -24,9 +26,6 @@ const Interact = () => {
     };
 
     const toggleAIVisibility = () => {
-        if (isAIVisible) {
-            setIsAnimating(true);
-        }
         setIsAIVisible(!isAIVisible);
     };
 
@@ -192,27 +191,25 @@ const Interact = () => {
                         messagesType={1}
                     />
                 </div>
-                {isAIVisible && (
-                    <div
-                        className={` ${isMobile ? 'w-full' : 'w-[30%] ml-[10px]'} h-full ${isAIVisible ? 'animate-expand' : 'animate-shrink'}`}
-                        style={{
-                            display: isAIVisible || isAnimating ? 'block' : 'none'
-                        }}
-                        onAnimationEnd={() => {
-                            if (!isAIVisible) {
-                                setIsAnimating(false);
-                            }
-                        }}
-                    >
-                        <AIChatBot
-                            onSendMessage={handleUserMessage}
-                            messages={messages}
-                            loading={responseLoading}
-                            toggleAIVisibility={toggleAIVisibility}
-                            isMobile={isMobile}
-                        />
-                    </div>
-                )}
+                <AnimatePresence>
+                    {isAIVisible && (
+                        <motion.div
+                            className={`${isMobile ? "w-full" : "w-[30%] ml-[10px]"} h-full`}
+                            initial={{ scale: 0, originX: 1, originY: 1 }}
+                            animate={{ scale: 1 }}
+                            exit={{ scale: 0, originX: 1, originY: 1 }}
+                            transition={{ duration: 0.5, ease: "easeInOut" }}
+                        >
+                            <AIChatBot
+                                onSendMessage={handleUserMessage}
+                                messages={messages}
+                                loading={responseLoading}
+                                toggleAIVisibility={toggleAIVisibility}
+                                isMobile={isMobile}
+                            />
+                        </motion.div>
+                    )}
+                </AnimatePresence>
             </div>
             {
                 ((!isAIVisible && isMobile) || !isMobile) ?
@@ -232,7 +229,7 @@ const Interact = () => {
                                     className='w-16 h-16 text-[35px] flex items-center justify-center rounded-full bg-zinc-900 text-white hover:text-primaryAccent transition ease-in-out delay-75 cursor-pointer'
                                     onClick={toggleAIVisibility}
                                 >
-                                    <FaBolt />
+                                    <SiHelpscout />
                                 </div>
                             </Tooltip>
                         </div>

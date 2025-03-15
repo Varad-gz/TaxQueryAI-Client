@@ -1,18 +1,45 @@
 'use client'
-import React, { Suspense } from 'react'
+import React, { Suspense, useState } from 'react'
 
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 
 import { IoChevronBack } from "react-icons/io5";
-
 import { FaHome } from "react-icons/fa";
-import { FcGoogle } from "react-icons/fc";
 
+import GoogleSigninButton from './GoogleSigninButton';
+import { signIn } from 'next-auth/react';
+import { toast } from 'react-toastify';
 
 const Signin = () => {
 
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+
     const router = useRouter();
+
+    const handleSignIn = async () => {
+
+        try {
+            const result = await signIn("credentials", {
+                redirect: false,
+                email,
+                password,
+            });
+
+            if (result?.error) {
+                toast.error(result.error);
+                return
+            }
+
+            toast.success("Sign-in successful!");
+
+            router.push("/interact");
+        } catch (error) {
+            console.error("Sign-in error:", error);
+            toast.error(error.message || "Sign-in failed. Please try again.");
+        }
+    };
 
     return (
         <div className='w-full flex'>
@@ -35,10 +62,10 @@ const Signin = () => {
                 <div className='text-4xl my-9'>Sign In</div>
                 <Suspense>
                     <div className='flex flex-col justify-center items-center'>
-                        <form className='flex flex-col w-full space-y-2'>
-                            <input type='email' placeholder='Enter your email' required className='bg-gray-50 px-2.5 py-5 rounded-lg border-[1px] border-gray-200'></input>
-                            <input type='password' placeholder='Enter your password' required className='bg-gray-50 px-2.5 py-5 rounded-lg border-[1px] border-gray-200'></input>
-                            <button type='submit' className='w-fit rounded-2xl border-[2px] px-5 py-2.5 mt-2.5 font-bold hover:bg-black hover:text-white transition ease-in-out delay-75 cursor-pointer'>Sign in</button>
+                        <form className='flex flex-col w-full space-y-2' action={handleSignIn}>
+                            <input type='email' placeholder='Enter your email' onChange={(e) => setEmail(e.target.value)} required className='bg-gray-50 px-2.5 py-5 rounded-lg border-[1px] border-gray-200'></input>
+                            <input type='password' placeholder='Enter your password' onChange={(e) => setPassword(e.target.value)} required className='bg-gray-50 px-2.5 py-5 rounded-lg border-[1px] border-gray-200'></input>
+                            <button type='submit' className='w-fit rounded-2xl border-[2px] px-5 py-2.5 mt-2.5 font-bold hover:bg-black hover:text-white focus:bg-black focus:text-white transition ease-in-out delay-75 cursor-pointer'>Sign in</button>
                         </form>
                         <Link href='/forgot-password' className='text-lg hover:text-primaryAccent'>Forgot Password</Link>
                         <Link href='/signup' className='text-lg hover:text-primaryAccent'>Don't have an account? Sign up</Link>
@@ -48,10 +75,7 @@ const Signin = () => {
                             <div className='bg-black rounded-r-full h-1 w-full'></div>
                         </div>
                         <div className='flex flex-col items-center w-full'>
-                            <button className='flex items-center border-2 rounded-2xl w-fit whitespace-nowrap p-3 font-bold space-x-5 hover:bg-black hover:text-white transition ease-in-out delay-75 cursor-pointer'>
-                                <FcGoogle className='text-2xl' />
-                                <span>Sign in with Google</span>
-                            </button>
+                            <GoogleSigninButton />
                         </div>
                     </div>
                 </Suspense>

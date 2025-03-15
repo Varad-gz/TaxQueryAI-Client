@@ -35,8 +35,8 @@ const Home = () => {
                     transition={{ duration: 1 }}
                     viewport={{ once: true }}
                 >
-                    <DeveloperCard name="Varad Pandit" />
-                    <DeveloperCard name="Pratyush Majumdar" />
+                    <DeveloperCard name="Varad Pandit" githubLink='https://github.com/Varad-gz' linkedinLink='https://www.linkedin.com/in/pandit-varad' />
+                    <DeveloperCard name="Pratyush Majumdar" githubLink='https://github.com/pratyush770' linkedinLink='https://www.linkedin.com/in/pratyush-majumdar' />
                 </motion.div>
             </div>
             <div className='bg-zinc-900 h-[100px] text-white flex items-center justify-center'>

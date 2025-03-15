@@ -53,7 +53,7 @@ const QueryTextBox = ({ placeholder, type, onSendMessage }) => {
                     value={inputText}
                     onChange={handleChange}
                     rows={1}
-                    className={`w-full p-[10px] outline-none resize-none overflow-y-auto text-[16px] scrollbar-thin scrollbar-thumb-rounded scrollbar-thumb-gray-200 bg-[#f9f9f9]`}
+                    className={`w-full p-[10px] outline-none resize-none overflow-y-auto text-[16px] scrollbar-thin scrollbar-thumb-rounded scrollbar-thumb-gray-200 scrollbar-track-[#f9f9f9] bg-[#f9f9f9]`}
                     style={{ lineHeight: "24px", maxHeight: "140px" }} // 20 for padding, 120 total line size
                     placeholder={placeholder}
                     onKeyDown={handleKeyDown}

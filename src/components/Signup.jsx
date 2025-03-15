@@ -12,11 +12,12 @@ import { motion, AnimatePresence } from 'framer-motion';
 import SignupEmailComponent from './SignupEmailComponent';
 import SignupPasswordComponent from './SignupPasswordComponent';
 import SignupPersonalInfoComponent from './SignupPersonalInfoComponent';
+import { toast } from 'react-toastify';
 
 const Signup = () => {
 
     const [step, setStep] = useState(1);
-    const [formData, setFormData] = useState({ email: "", password: "", fullName: "" });
+    const [formData, setFormData] = useState({ email: "", password: "" });
 
     const router = useRouter();
 
@@ -29,8 +30,29 @@ const Signup = () => {
         setStep((prev) => (prev > 1 ? prev - 1 : prev));
     };
 
-    const handleSignUp = (values) => {
-        console.log("Final Data:", { ...formData, ...values });
+    const handleSignUp = async (values) => {
+
+        try {
+            const response = await fetch("/api/profile/signup", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ email: formData.email, password: formData.password, fullName: values.fullName }),
+            });
+
+            if (!response.ok) {
+                throw new Error("Signup failed");
+            }
+
+            toast.success('User signed up successfully', {
+                onClose: () => {
+                    router.push("/signin");
+                },
+            })
+        } catch (error) {
+            toast.error(error.message);
+        }
     };
 
 

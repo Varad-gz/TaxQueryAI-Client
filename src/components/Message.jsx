@@ -1,6 +1,11 @@
 import React from 'react';
 import ReactMarkdown from 'react-markdown';
+
 import { MdRealEstateAgent } from "react-icons/md";
+import { MdContentCopy } from "react-icons/md";
+
+import { motion } from 'framer-motion';
+import { toast } from 'react-toastify';
 
 const Message = ({ type, children, isFirst }) => {
 
@@ -22,8 +27,21 @@ const Message = ({ type, children, isFirst }) => {
 
     const mainDivStyle = styleTypes[type] || styleTypes.default;
 
+    const handleCopyToClipboard = () => {
+        navigator.clipboard.writeText(children).then(() => {
+            toast.success('Text copied to clipboard')
+        }).catch(err => {
+            toast.error('Failed to copy text: ', err);
+        });
+    };
+
     return (
-        <div className={`${mainDivStyle}`} >
+        <motion.div
+            className={`${mainDivStyle}`}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.5, ease: "easeInOut" }}
+        >
             {type === 2 && (
                 <div className='mb-[10px] flex items-center'>
                     <div className='border-[2px] border-[#EFEFEF] p-[5px] rounded-full w-fit'>
@@ -60,7 +78,10 @@ const Message = ({ type, children, isFirst }) => {
                     {children}
                 </ReactMarkdown>
             </div>
-        </div >
+            <button onClick={handleCopyToClipboard} className="mt-3 cursor-pointer">
+                <MdContentCopy />
+            </button>
+        </motion.div >
     );
 }
 
