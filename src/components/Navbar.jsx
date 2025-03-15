@@ -25,28 +25,22 @@ const Navbar = () => {
                 <div className='h-full flex flex-col items-center text-[35px]'>
                     <div className='flex flex-col space-y-5'>
                         <Tooltip text="Analytics Dashboard">
-                            <Link href='/dashboard'>
-                                <div className='flex items-center hover:text-primaryAccent hover:scale-110 transition ease-in-out delay-75'>
-                                    <IoMdAnalytics />
-                                </div>
+                            <Link href='/dashboard' className='flex items-center hover:text-primaryAccent active:text-primaryAccent focus:text-primaryAccent outline-0 hover:scale-110 transition ease-in-out delay-75'>
+                                <IoMdAnalytics />
                             </Link>
                         </Tooltip>
                         <Tooltip text="Datasets">
-                            <Link href='/datasets'>
-                                <div className='flex items-center hover:text-primaryAccent hover:scale-110 transition ease-in-out delay-75'>
-                                    <FaDatabase />
-                                </div>
+                            <Link href='/datasets' className='flex items-center hover:text-primaryAccent active:text-primaryAccent focus:text-primaryAccent outline-0 hover:scale-110 transition ease-in-out delay-75'>
+                                <FaDatabase />
                             </Link>
                         </Tooltip>
                         <Tooltip text="Visualize Predictions">
-                            <Link href='/visualize'>
-                                <div className='flex items-center hover:text-primaryAccent hover:scale-110 transition ease-in-out delay-75'>
-                                    <MdAutoGraph />
-                                </div>
+                            <Link href='/visualize' className='flex items-center hover:text-primaryAccent active:text-primaryAccent focus:text-primaryAccent outline-0 hover:scale-110 transition ease-in-out delay-75'>
+                                <MdAutoGraph />
                             </Link>
                         </Tooltip>
                         <Tooltip text="Logout">
-                            <button onClick={handleLogout} className='flex items-center hover:text-primaryAccent hover:scale-110 transition ease-in-out delay-75 cursor-pointer'>
+                            <button onClick={handleLogout} className='flex items-center hover:text-primaryAccent active:text-primaryAccent focus:text-primaryAccent outline-0 hover:scale-110 transition ease-in-out delay-75 cursor-pointer'>
                                 <IoMdLogOut />
                             </button>
                         </Tooltip>

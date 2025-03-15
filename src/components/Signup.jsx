@@ -65,11 +65,11 @@ const Signup = () => {
             </div>
             <div className='w-full md:w-[50%] lg:w-[40%] h-screen px-5 py-10'>
                 <div className='flex justify-between'>
-                    <button onClick={() => { router.back() }} className='text-2xl flex items-center space-x-2.5 hover:text-primaryAccent hover:scale-95 transition ease-in-out delay-75 cursor-pointer'>
+                    <button onClick={() => { router.back() }} className='text-2xl flex items-center space-x-2.5 hover:text-primaryAccent active:text-primaryAccent focus:text-primaryAccent outline-0 hover:scale-95 transition ease-in-out delay-75 cursor-pointer'>
                         <IoChevronBack />
                         <span>Go Back</span>
                     </button>
-                    <Link href='/' className='text-2xl flex items-center space-x-2.5 hover:text-primaryAccent hover:scale-95 transition ease-in-out delay-75 cursor-pointer'>
+                    <Link href='/' className='text-2xl flex items-center space-x-2.5 hover:text-primaryAccent active:text-primaryAccent focus:text-primaryAccent outline-0 hover:scale-95 transition ease-in-out delay-75 cursor-pointer'>
                         <FaHome />
                         <span>Go Home</span>
                     </Link>
@@ -115,7 +115,7 @@ const Signup = () => {
                             )}
                         </AnimatePresence>
                     </motion.div>
-                    <Link href='/signin' className='text-lg hover:text-primaryAccent'>Already have an account? Sign in</Link>
+                    <Link href='/signin' className='text-lg hover:text-primaryAccent active:text-primaryAccent focus:text-primaryAccent outline-0'>Already have an account? Sign in</Link>
                 </div>
             </div>
         </div>

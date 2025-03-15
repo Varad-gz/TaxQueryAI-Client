@@ -65,6 +65,24 @@
     animation: shrink 0.3s ease-in forwards;
   }
 
+  /* styles.css */
+  .custom-toast {
+    background-color: #18181B !important;
+    color: white !important;
+    border: 2px solid #26262B !important;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1) !important;
+  }
+
+  /* Style the close button */
+  .Toastify__close-button {
+    color: white !important;
+    opacity: 0.7 !important;
+  }
+
+  .Toastify__close-button:hover {
+    opacity: 1 !important;
+  }
+
 }
 
 @plugin 'tailwind-scrollbar' {

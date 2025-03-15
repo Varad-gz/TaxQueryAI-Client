@@ -5,6 +5,7 @@ import "./globals.css";
 
 import { AuthProvider } from "@/contexts/AuthContext";
 import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -30,14 +31,15 @@ export default function RootLayout({ children }) {
         className={`${spaceGrotesk.className} antialiased bg-white text-black box-border scrollbar-thin scrollbar-thumb-zinc-900 scrollbar-track-zinc-700`}
       >
         <ToastContainer
-          position="top-center"
-          hideProgressBar={false}
+          position="bottom-right"
+          hideProgressBar={true}
           newestOnTop={false}
           closeOnClick
           rtl={false}
           pauseOnFocusLoss
           pauseOnHover
           autoClose={3000}
+          toastClassName='custom-toast'
         />
         <AuthProvider>
           {children}

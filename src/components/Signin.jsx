@@ -50,11 +50,11 @@ const Signin = () => {
             </div>
             <div className='w-full md:w-[50%] lg:w-[40%] h-screen px-5 py-10'>
                 <div className='flex justify-between'>
-                    <button onClick={() => { router.back() }} className='text-2xl flex items-center space-x-2.5 hover:text-primaryAccent hover:scale-95 transition ease-in-out delay-75 cursor-pointer'>
+                    <button onClick={() => { router.back() }} className='text-2xl flex items-center space-x-2.5 hover:text-primaryAccent active:text-primaryAccent focus:text-primaryAccent outline-0 hover:scale-95 transition ease-in-out delay-75 cursor-pointer'>
                         <IoChevronBack />
                         <span>Go Back</span>
                     </button>
-                    <Link href='/' className='text-2xl flex items-center space-x-2.5 hover:text-primaryAccent hover:scale-95 transition ease-in-out delay-75 cursor-pointer'>
+                    <Link href='/' className='text-2xl flex items-center space-x-2.5 hover:text-primaryAccent active:text-primaryAccent focus:text-primaryAccent outline-0 hover:scale-95 transition ease-in-out delay-75 cursor-pointer'>
                         <FaHome />
                         <span>Go Home</span>
                     </Link>
@@ -65,10 +65,10 @@ const Signin = () => {
                         <form className='flex flex-col w-full space-y-2' action={handleSignIn}>
                             <input type='email' placeholder='Enter your email' onChange={(e) => setEmail(e.target.value)} required className='bg-gray-50 px-2.5 py-5 rounded-lg border-[1px] border-gray-200'></input>
                             <input type='password' placeholder='Enter your password' onChange={(e) => setPassword(e.target.value)} required className='bg-gray-50 px-2.5 py-5 rounded-lg border-[1px] border-gray-200'></input>
-                            <button type='submit' className='w-fit rounded-2xl border-[2px] px-5 py-2.5 mt-2.5 font-bold hover:bg-black hover:text-white focus:bg-black focus:text-white transition ease-in-out delay-75 cursor-pointer'>Sign in</button>
+                            <button type='submit' className='w-fit rounded-2xl border-[2px] px-5 py-2.5 mt-2.5 font-bold hover:bg-black hover:text-white active:bg-black active:text-white outline-0 focus:bg-black focus:text-white transition ease-in-out delay-75 cursor-pointer'>Sign in</button>
                         </form>
-                        <Link href='/forgot-password' className='text-lg hover:text-primaryAccent'>Forgot Password</Link>
-                        <Link href='/signup' className='text-lg hover:text-primaryAccent'>Don't have an account? Sign up</Link>
+                        <Link href='/forgot-password' className='text-lg hover:text-primaryAccent active:text-primaryAccent focus:text-primaryAccent outline-0'>Forgot Password</Link>
+                        <Link href='/signup' className='text-lg hover:text-primaryAccent active:text-primaryAccent focus:text-primaryAccent outline-0'>Don't have an account? Sign up</Link>
                         <div className='w-full my-5 flex items-center'>
                             <div className='bg-black rounded-l-full h-1 w-full'></div>
                             <div className=' p-1 border-[2px] rounded-full font-bold flex items-center justify-center'>Or</div>

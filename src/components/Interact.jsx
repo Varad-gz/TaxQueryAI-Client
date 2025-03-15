@@ -177,7 +177,7 @@ const Interact = () => {
     };
 
     return (
-        <div className='w-full h-full flex flex-col items-center relative'>
+        <div className='w-full h-[calc(100dvh-64px)] flex flex-col items-center relative'>
             <div
                 className="w-full flex-1 overflow-auto flex justify-center mt-4 px-4 md:px-5"
                 style={{ paddingBottom: `${queryBoxHeight + 20}px` }}
@@ -224,18 +224,18 @@ const Interact = () => {
                         </div>
                         <div className='absolute right-4 md:right-5 bottom-3'>
                             <Tooltip text="Ask AI" position='left'>
-                                <div
-                                    className='w-16 h-16 text-[35px] flex items-center justify-center rounded-full bg-zinc-900 text-white hover:text-primaryAccent transition ease-in-out delay-75 cursor-pointer'
+                                <button
+                                    className='w-16 h-16 text-[35px] flex items-center justify-center rounded-full bg-zinc-900 text-white hover:text-primaryAccent active:text-primaryAccent focus:text-primaryAccent outline-0 transition ease-in-out delay-75 cursor-pointer'
                                     onClick={toggleAIVisibility}
                                 >
                                     <SiHelpscout />
-                                </div>
+                                </button>
                             </Tooltip>
                         </div>
                     </> :
-                    <div className="absolute left-4 right-4 bottom-3 h-16 flex items-center justify-center px-4 rounded-lg bg-zinc-900 text-white font-bold select-none cursor-pointer" onClick={toggleAIVisibility}>
+                    <button className="absolute left-4 right-4 bottom-3 h-16 flex items-center justify-center px-4 rounded-lg bg-zinc-900 text-white font-bold select-none cursor-pointer" onClick={toggleAIVisibility}>
                         Close ChatBot
-                    </div>
+                    </button>
             }
         </div>
     )

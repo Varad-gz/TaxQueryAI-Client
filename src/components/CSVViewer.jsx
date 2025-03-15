@@ -39,7 +39,7 @@ const CsvViewer = () => {
     };
 
     return (
-        <div className="p-[20px] flex flex-col">
+        <div className="p-[20px] h-[calc(100dvh-64px)] flex flex-col">
             <div className="flex mb-[20px] bg-gray-200 w-fit whitespace-nowrap px-[20px] py-[10px] rounded-md">
                 <select onChange={handleFileChange} value={selectedFile} className="text-[16px] font-bold outline-none cursor-pointer">
                     {fileList.map((file) => (
@@ -48,11 +48,11 @@ const CsvViewer = () => {
                         </option>
                     ))}
                 </select>
-                <button onClick={handleDownload} className="ml-[10px] text-[30px]">
-                    <Tooltip text="Download CSV" position="right">
-                        <FaFileDownload className='hover:text-primaryAccent hover:scale-110 transition ease-in-out delay-75 cursor-pointer' />
-                    </Tooltip>
-                </button>
+                <Tooltip text="Download CSV" position="right">
+                    <button onClick={handleDownload} className='ml-[10px] text-[30px] hover:text-primaryAccent active:text-primaryAccent focus:text-primaryAccent outline-0 hover:scale-110 transition ease-in-out delay-75 cursor-pointer'>
+                        <FaFileDownload />
+                    </button>
+                </Tooltip>
             </div>
             <div>
                 {data.length > 0 ? (

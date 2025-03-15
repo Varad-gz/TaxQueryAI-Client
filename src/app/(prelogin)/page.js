@@ -10,7 +10,7 @@ const Home = () => {
     return (
         <div className='flex flex-col'>
             <PreLoginNavbar />
-            <div className='h-[calc(100vh-80px)] bg-gradient-to-b from-gray-900 to-primaryAccent transition-colors duration-300 ease-in-out flex flex-col justify-center items-center text-white select-none'>
+            <div className='h-[calc(100dvh-80px)] bg-gradient-to-b from-gray-900 to-primaryAccent transition-colors duration-300 ease-in-out flex flex-col justify-center items-center text-white select-none'>
                 <motion.h2
                     className='text-6xl md:text-8xl mb-[30px]'
                     initial={{ opacity: 0, y: 20 }}

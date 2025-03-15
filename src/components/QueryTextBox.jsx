@@ -71,12 +71,11 @@ const QueryTextBox = ({ placeholder, type, onSendMessage }) => {
                     onKeyDown={handleKeyDown}
                 />
             </div>
-            <div
-                className={`w-fit px-[20px] flex-shrink-0 flex items-center justify-center text-[25px] bg-[#f9f9f9] border-[1px] border-gray-200 rounded-r-lg border-l-0`}
-                onClick={sendMessage}
-            >
+            <div className={`w-fit px-[20px] flex-shrink-0 flex items-center justify-center text-[25px] bg-[#f9f9f9] border-[1px] border-gray-200 rounded-r-lg border-l-0`}>
                 <Tooltip text="Send" position='top'>
-                    <LuSendHorizontal className='hover:text-primaryAccent hover:scale-110 transition ease-in-out delay-75 cursor-pointer' />
+                    <button onClick={sendMessage} className='hover:text-primaryAccent active:text-primaryAccent focus:text-primaryAccent outline-0 hover:scale-110 transition ease-in-out delay-75 cursor-pointer'>
+                        <LuSendHorizontal />
+                    </button>
                 </Tooltip>
             </div>
         </div>

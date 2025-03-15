@@ -11,11 +11,11 @@ const DeveloperCard = ({ name, githubLink = '#', linkedinLink = '#' }) => {
                 {name}
             </span>
             <div className='flex flex-row mt-[20px] space-x-3 text-5xl'>
-                <Link href={githubLink}>
-                    <FaGithub className='hover:text-primaryAccent hover:scale-95 transition ease-in-out cursor-pointer' />
+                <Link href={githubLink} className='hover:text-primaryAccent active:text-primaryAccent focus:text-primaryAccent outline-0 hover:scale-95 transition ease-in-out cursor-pointer' >
+                    <FaGithub />
                 </Link>
-                <Link href={linkedinLink}>
-                    <FaLinkedin className='hover:text-primaryAccent hover:scale-95 transition ease-in-out cursor-pointer' />
+                <Link href={linkedinLink} className='hover:text-primaryAccent active:text-primaryAccent focus:text-primaryAccent outline-0 hover:scale-95 transition ease-in-out cursor-pointer' >
+                    <FaLinkedin />
                 </Link>
             </div>
         </div>

@@ -41,7 +41,7 @@ const SignupEmailComponent = ({ nextStep }) => {
                 <Form className="flex flex-col w-full space-y-2.5">
                     <Field type="email" name="email" placeholder="Enter your email" className='bg-gray-50 px-2.5 py-5 rounded-lg border-[1px] border-gray-200' />
                     <ErrorMessage name="email" component="p" className="w-full text-center text-red-500 font-bold" />
-                    <button type="submit" disabled={isSubmitting} className='w-fit rounded-2xl border-[2px] px-5 py-2.5 mt-2.5 font-bold hover:bg-black hover:text-white focus:bg-black focus:text-white transition ease-in-out delay-75 cursor-pointer'>
+                    <button type="submit" disabled={isSubmitting} className='w-fit rounded-2xl border-[2px] px-5 py-2.5 mt-2.5 font-bold hover:bg-black hover:text-white active:bg-black active:text-white outline-0 focus:bg-black focus:text-white transition ease-in-out delay-75 cursor-pointer'>
                         Next
                     </button>
                 </Form>
