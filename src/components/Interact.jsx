@@ -5,7 +5,6 @@ import QueryTextBox from '@/components/QueryTextBox';
 import MessageContainer from '@/components/MessageContainer';
 import AIChatBot from '@/components/AIChatBot';
 import Tooltip from '@/components/Tooltop';
-import { FaBolt } from "react-icons/fa";
 import { motion, AnimatePresence } from 'framer-motion';
 import { SiHelpscout } from "react-icons/si";
 
@@ -195,10 +194,10 @@ const Interact = () => {
                     {isAIVisible && (
                         <motion.div
                             className={`${isMobile ? "w-full" : "w-[30%] ml-[10px]"} h-full`}
-                            initial={{ scale: 0, originX: 1, originY: 1 }}
-                            animate={{ scale: 1 }}
-                            exit={{ scale: 0, originX: 1, originY: 1 }}
-                            transition={{ duration: 0.5, ease: "easeInOut" }}
+                            initial={!isMobile ? { scale: 0, originX: 1, originY: 1 } : false}
+                            animate={!isMobile ? { scale: 1 } : false}
+                            exit={!isMobile ? { scale: 0, originX: 1, originY: 1 } : false}
+                            transition={!isMobile ? { duration: 0.5, ease: "easeInOut" } : false}
                         >
                             <AIChatBot
                                 onSendMessage={handleUserMessage}

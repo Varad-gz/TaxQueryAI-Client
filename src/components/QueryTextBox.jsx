@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState, useRef } from 'react'
+import React, { useState, useRef, useEffect } from 'react'
 
 import Tooltip from './Tooltop';
 
@@ -9,10 +9,22 @@ import { LuSendHorizontal } from "react-icons/lu";
 
 const QueryTextBox = ({ placeholder, type, onSendMessage }) => {
     const [inputText, setInputText] = useState("");
+    const [isMobile, setIsMobile] = useState(false);
+
+    useEffect(() => {
+        const checkScreenSize = () => {
+            setIsMobile(window.innerWidth < 768);
+        };
+
+        checkScreenSize();
+        window.addEventListener("resize", checkScreenSize);
+        return () => window.removeEventListener("resize", checkScreenSize);
+    }, []);
+
     const textareaRef = useRef(null);
 
     const handleKeyDown = (event) => {
-        if (event.key === 'Enter' && !event.shiftKey) {
+        if (event.key === 'Enter' && !event.shiftKey && !isMobile) {
             event.preventDefault();
             sendMessage();
         }

@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 const Tooltip = ({
     text,
@@ -38,6 +38,11 @@ const Tooltip = ({
             setVisible(true);
         }
     };
+
+    // Reset visibility when children change
+    useEffect(() => {
+        setVisible(false);
+    }, [children]);
 
     return (
         <div
