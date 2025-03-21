@@ -192,22 +192,38 @@ def generate_sql_query(db, question):
     return get_sql_chain(db).invoke({"question": question})
 
 
+def extract_metric_type(user_query: str):
+    user_query = user_query.lower()
+    if "tax demand" in user_query:
+        return "tax demand"
+    elif "tax collection" in user_query:
+        return "tax collection"
+    elif "collection gap" in user_query:
+        return "collection gap"
+    elif "property efficiency" in user_query:
+        return "property efficiency"
+    else:
+        return "unknown"  # Default if no known type is found
+    
+    
 def get_response(user_query: str, db: SQLDatabase, city: str, property_type: str, year: int,
                  df: pd.DataFrame):
+    metric_type = extract_metric_type(user_query)  # extract metric type
     # check for a prediction-based response
     prediction_response = get_prediction_response(user_query, city, property_type, year, df)
     if prediction_response:
-        return prediction_response  # if there's a prediction, return it immediately
+        return prediction_response, year, metric_type  # if there's a prediction, return it immediately
     # handle collection gap queries
     if "collection gap" in user_query.lower() and year > 2018:
         gap = predict_metric(user_query, city, year, property_type, df)
-        return f"The predicted collection gap for {city} {property_type} in {year} is {gap} Cr"
+        return f"The predicted collection gap for {city} {property_type} in {year} is {gap} Cr", year, metric_type
     # handle property efficiency queries
     if "property efficiency" in user_query.lower() and year > 2018:
         efficiency = predict_metric(user_query, city, year, property_type, df)
-        return f"The predicted property efficiency for {city} {property_type} in {year} is {efficiency}%"
+        return f"The predicted property efficiency for {city} {property_type} in {year} is {efficiency}%", year, metric_type
     # if no predictions applied, execute a normal SQL query
-    return get_sql_response(user_query, db)
+    sql_response = get_sql_response(user_query, db)
+    return sql_response, year, metric_type  # return both response and year
 
 
 def chatbot_response(user_query: str):  # function to return the chatbot_response
