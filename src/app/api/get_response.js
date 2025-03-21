@@ -13,7 +13,8 @@ export default async function handler(req, res) {
       });
   
       const data = await response.json();
-      res.status(200).json(data);
+      // res.status(200).json({year: data.year, response: data.response});
+      res.status(200).json({response: data.response});
     } catch (error) {
       console.error("Error fetching response from Flask:", error);
       res.status(500).json({ error: "Internal server error" });
