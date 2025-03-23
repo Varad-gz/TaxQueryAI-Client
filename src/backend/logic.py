@@ -241,7 +241,7 @@ def chatbot_response(user_query: str):  # function to return the chatbot_respons
 if __name__ == "__main__":
     mysql_uri = mysql_uri  # use local database
     db = SQLDatabase.from_uri(mysql_uri)
-    df = pd.read_csv("D:/TaxQueryAI/datasets/transformed_data/Property-Tax-Erode.csv")  # load tax data
+    df = pd.read_csv("https://raw.githubusercontent.com/pratyush770/TaxQueryAI/master/datasets/transformed_data/Property-Tax-Erode.csv")  # load tax data
 
     # example: normal query
     user_query = "What was the tax collection in 2013-14 residential for Erode in ward 3?"

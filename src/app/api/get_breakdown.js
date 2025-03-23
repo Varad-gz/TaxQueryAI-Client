@@ -4,7 +4,7 @@ export default async function handler(req, res) {
     }
   
     try {
-      const response = await fetch("https://taxqueryai.onrender.com/api/get_breakdown", {
+      const response = await fetch("https://pratyush770.pythonanywhere.com/api/get_breakdown", {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
