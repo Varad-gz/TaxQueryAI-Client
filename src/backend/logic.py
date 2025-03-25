@@ -139,53 +139,56 @@ def extract_query_info(user_query):  # function to extract city, property type, 
 
 def give_breakdown(user_query: str, response: str, db: SQLDatabase, is_prediction: bool):
     sql_query = get_sql_chain(db).invoke({"question": user_query})  # get SQL query
+    city, property_type, selected_year = extract_query_info(user_query)  # extract city, property type, and year from the query
+
     if is_prediction:  # for future prediction
         template = """
-            Based on the user's question and the predicted response, provide a structured breakdown of how the prediction was generated.
-            The explanation should be in past tense and concise.
+            Provide a structured breakdown of how the prediction was generated. Ensure the explanation is structured in past tense without explicitly mentioning it.
 
             **Question:** {question}  
             **Response:** {response} 
 
             **Breakdown:**      
-            • Historical property tax data from 2013 to 2018 was gathered.  
-            • A **Linear Regression** model was trained on this data to identify patterns.  
-            • The trained model predicted the property tax value for the requested year.  
-            • The prediction is based on observed trends and may vary due to unforeseen factors.  
+            • **Historical data range:** Property tax data from **2013 to 2018** was used for training.  
+            • The year **{selected_year}** was selected for prediction.  
+            • A **Linear Regression** model was trained on this dataset to identify patterns.  
+            • The trained model analyzed past trends and generated the predicted property tax value.  
+            • The prediction was based on observed trends and could vary due to unforeseen factors.  
         """
     else:  # for existing data
         template = """
-            Provide a structured breakdown of how the response was derived from the database.
-            The explanation should be in past tense and concise.
+            Provide a structured breakdown of how the response was derived from the database. Ensure the explanation is structured in past tense without explicitly mentioning it.
 
             **Question:** {question}  
             **Response:** {response}
 
             **Breakdown:**  
-            • Step 1: Identify relevant tables and fields.  
-            • Step 2: Apply necessary filters (e.g., city, property type, year).  
-            • Step 3: Display the sql query {sql_query}  
-            • Step 4: Compute values using the database records.  
-            • Step 5: Format the response accordingly.  
+            • **Historical data range:** Property tax data from **2013 to 2018** was used.  
+            • The year **{selected_year}** was selected for this query.  
+            • Relevant tables and fields were identified.  
+            • Necessary filters (e.g., city, property type, year) were applied.  
+            • The following SQL query was executed: `{sql_query}`  
+            • Database records were retrieved and processed to compute the required values.  
+            • The response was formatted accordingly.  
         """
 
     prompt = ChatPromptTemplate.from_template(template)
 
     chain = (
-            RunnablePassthrough.assign(
-                schema=lambda _: get_schema(db),  # get cached schema
-            )
-            | prompt
-            | llm1
-            | StrOutputParser()
+        RunnablePassthrough.assign(
+            schema=lambda _: get_schema(db),  # get cached schema
+        )
+        | prompt
+        | llm1
+        | StrOutputParser()
     )
 
     return chain.invoke({
         "question": user_query,
         "response": response,
         "sql_query": sql_query,
+        "selected_year": selected_year if selected_year else "N/A"
     })
-
 
 
 def generate_sql_query(db, question):
