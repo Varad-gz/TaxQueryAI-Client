@@ -40,9 +40,7 @@ export default function NavbarClient() {
 
     return (
         <>
-            {/* Sticky Header with Title and Hamburger */}
             <div className="fixed top-0 left-0 right-0 h-16 bg-zinc-900 text-white z-40 flex items-center px-4">
-                {/* Left section with menu button */}
                 <div className="absolute left-4">
                     <button
                         className="rounded-md md:hidden cursor-pointer"
@@ -53,7 +51,6 @@ export default function NavbarClient() {
                     </button>
                 </div>
 
-                {/* Centered title section */}
                 <div className="flex-1 flex justify-center">
                     <div className="flex flex-col items-center">
                         <div className="flex items-center">

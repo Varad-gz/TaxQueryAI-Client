@@ -7,6 +7,7 @@ import AIChatBot from '@/components/AIChatBot';
 import Tooltip from '@/components/Tooltop';
 import { motion, AnimatePresence } from 'framer-motion';
 import { SiHelpscout } from "react-icons/si";
+import useIsMobile from '@/hooks/useIsMobile';
 
 
 const Interact = () => {
@@ -15,7 +16,8 @@ const Interact = () => {
     const [messages, setMessages] = useState([]);
     const [lastUserQuery, setLastUserQuery] = useState(null);
     const [responseLoading, setResponseLoading] = useState(false);
-    const [isMobile, setIsMobile] = useState(false);
+
+    const isMobile = useIsMobile();
 
     const queryBoxRef = useRef(null);
     const messagesEndRef = useRef(null);
@@ -28,15 +30,6 @@ const Interact = () => {
         setIsAIVisible(!isAIVisible);
     };
 
-    useEffect(() => {
-        const checkScreenSize = () => {
-            setIsMobile(window.innerWidth < 768);
-        };
-
-        checkScreenSize();
-        window.addEventListener("resize", checkScreenSize);
-        return () => window.removeEventListener("resize", checkScreenSize);
-    }, []);
 
     useEffect(() => {
         scrollToBottom();

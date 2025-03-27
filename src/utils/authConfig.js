@@ -28,9 +28,9 @@ export const authConfig = {
             clientSecret: process.env.GOOGLE_CLIENT_SECRET,
             async profile(profile) {
 
-                const { data: existingUser } = await supabase
+                const { data: existingUser, error: fetchError } = await supabase
                     .from("profiles")
-                    .select("id, image")
+                    .select("id, image, method")
                     .eq("email", profile.email)
                     .single();
 

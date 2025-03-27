@@ -1,25 +1,16 @@
 'use client'
 
-import React, { useState, useRef, useEffect } from 'react'
+import React, { useState, useRef } from 'react'
 
 import Tooltip from './Tooltop';
-
 import { LuSendHorizontal } from "react-icons/lu";
+import useIsMobile from '@/hooks/useIsMobile';
 
 
 const QueryTextBox = ({ placeholder, type, onSendMessage }) => {
     const [inputText, setInputText] = useState("");
-    const [isMobile, setIsMobile] = useState(false);
 
-    useEffect(() => {
-        const checkScreenSize = () => {
-            setIsMobile(window.innerWidth < 768);
-        };
-
-        checkScreenSize();
-        window.addEventListener("resize", checkScreenSize);
-        return () => window.removeEventListener("resize", checkScreenSize);
-    }, []);
+    const isMobile = useIsMobile();
 
     const textareaRef = useRef(null);
 

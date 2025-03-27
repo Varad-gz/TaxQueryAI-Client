@@ -1,13 +1,17 @@
-import React from 'react';
+'use client'
+
+import React, { useState } from 'react';
 import ReactMarkdown from 'react-markdown';
 
 import { MdRealEstateAgent } from "react-icons/md";
 import { MdContentCopy } from "react-icons/md";
 
-import { motion } from 'framer-motion';
-import { toast } from 'react-toastify';
+import { AnimatePresence, motion } from 'framer-motion';
 
 const Message = ({ type, children, isFirst }) => {
+
+    const [copied, setCopied] = useState(false);
+    const [copiedMessage, setCopiedMessage] = useState(null);
 
     const baseStyleTypes = {
         1: 'bg-primaryAccent text-white rounded-sm w-full text-base px-5 py-5',
@@ -29,9 +33,17 @@ const Message = ({ type, children, isFirst }) => {
 
     const handleCopyToClipboard = () => {
         navigator.clipboard.writeText(children).then(() => {
-            toast.success('Text copied to clipboard')
+            setCopiedMessage(1)
+            setCopied(true)
+            setTimeout(() => {
+                setCopied(false)
+            }, 2000)
         }).catch(err => {
-            toast.error('Failed to copy text: ', err);
+            setCopiedMessage(2)
+            setCopied(true)
+            setTimeout(() => {
+                setCopied(false)
+            }, 2000)
         });
     };
 
@@ -78,9 +90,24 @@ const Message = ({ type, children, isFirst }) => {
                     {children}
                 </ReactMarkdown>
             </div>
-            <button onClick={handleCopyToClipboard} className="mt-3 cursor-pointer">
-                <MdContentCopy />
-            </button>
+            <div className='flex items-end space-x-2'>
+                <button onClick={handleCopyToClipboard} className="mt-3 cursor-pointer">
+                    <MdContentCopy className='text-lg' />
+                </button>
+                <AnimatePresence>
+                    {copied &&
+                        <motion.span
+                            className='text-sm font-bold'
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            exit={{ opacity: 0 }}
+                            transition={{ duration: 0.5, ease: "easeInOut" }}
+                        >
+                            {copiedMessage === 1 ? 'Copied!' : "Couldn't Copy!"}
+                        </motion.span>
+                    }
+                </AnimatePresence>
+            </div>
         </motion.div >
     );
 }
