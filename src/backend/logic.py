@@ -139,75 +139,94 @@ def extract_query_info(user_query):  # function to extract city, property type, 
 
 def give_breakdown(user_query: str, response: str, db: SQLDatabase, is_prediction: bool):
     sql_query = get_sql_chain(db).invoke({"question": user_query})  # get SQL query
+    city, property_type, selected_year = extract_query_info(user_query)  # extract city, property type, and year from the query
+
     if is_prediction:  # for future prediction
         template = """
-            Based on the user's question and the predicted response, provide a structured breakdown of how the prediction was generated.
-            The explanation should be in past tense and concise.
+            Provide a structured breakdown of how the prediction was generated. Ensure the explanation is structured in past tense without explicitly mentioning it.
 
             **Question:** {question}  
             **Response:** {response} 
 
             **Breakdown:**      
-            • Historical property tax data from 2013 to 2018 was gathered.  
-            • A **Linear Regression** model was trained on this data to identify patterns.  
-            • The trained model predicted the property tax value for the requested year.  
-            • The prediction is based on observed trends and may vary due to unforeseen factors.  
+            • **Historical data range:** Property tax data from **2013 to 2018** was used for training.  
+            • The year **{selected_year}** was selected for prediction.  
+            • A **Linear Regression** model was trained on this dataset to identify patterns.  
+            • The trained model analyzed past trends and generated the predicted property tax value.  
+            • The prediction was based on observed trends and could vary due to unforeseen factors.  
         """
     else:  # for existing data
         template = """
-            Provide a structured breakdown of how the response was derived from the database.
-            The explanation should be in past tense and concise.
+            Provide a structured breakdown of how the response was derived from the database. Ensure the explanation is structured in past tense without explicitly mentioning it.
 
             **Question:** {question}  
             **Response:** {response}
 
             **Breakdown:**  
-            • Step 1: Identify relevant tables and fields.  
-            • Step 2: Apply necessary filters (e.g., city, property type, year).  
-            • Step 3: Display the sql query {sql_query}  
-            • Step 4: Compute values using the database records.  
-            • Step 5: Format the response accordingly.  
+            • **Historical data range:** Property tax data from **2013 to 2018** was used.  
+            • The year **{selected_year}** was selected for this query.  
+            • Relevant tables and fields were identified.  
+            • Necessary filters (e.g., city, property type, year) were applied.  
+            • The following SQL query was executed: `{sql_query}`  
+            • Database records were retrieved and processed to compute the required values.  
+            • The response was formatted accordingly.  
         """
 
     prompt = ChatPromptTemplate.from_template(template)
 
     chain = (
-            RunnablePassthrough.assign(
-                schema=lambda _: get_schema(db),  # get cached schema
-            )
-            | prompt
-            | llm1
-            | StrOutputParser()
+        RunnablePassthrough.assign(
+            schema=lambda _: get_schema(db),  # get cached schema
+        )
+        | prompt
+        | llm1
+        | StrOutputParser()
     )
 
     return chain.invoke({
         "question": user_query,
         "response": response,
         "sql_query": sql_query,
+        "selected_year": selected_year if selected_year else "N/A"
     })
-
 
 
 def generate_sql_query(db, question):
     return get_sql_chain(db).invoke({"question": question})
 
 
+def extract_metric_type(user_query: str):
+    user_query = user_query.lower()
+    if "tax demand" in user_query:
+        return "tax demand"
+    elif "tax collection" in user_query:
+        return "tax collection"
+    elif "collection gap" in user_query:
+        return "collection gap"
+    elif "property efficiency" in user_query:
+        return "property efficiency"
+    else:
+        return "unknown"  # Default if no known type is found
+    
+    
 def get_response(user_query: str, db: SQLDatabase, city: str, property_type: str, year: int,
                  df: pd.DataFrame):
+    metric_type = extract_metric_type(user_query)  # extract metric type
     # check for a prediction-based response
     prediction_response = get_prediction_response(user_query, city, property_type, year, df)
     if prediction_response:
-        return prediction_response  # if there's a prediction, return it immediately
+        return prediction_response, year, metric_type  # if there's a prediction, return it immediately
     # handle collection gap queries
     if "collection gap" in user_query.lower() and year > 2018:
         gap = predict_metric(user_query, city, year, property_type, df)
-        return f"The predicted collection gap for {city} {property_type} in {year} is {gap} Cr"
+        return f"The predicted collection gap for {city} {property_type} in {year} is {gap} Cr", year, metric_type
     # handle property efficiency queries
     if "property efficiency" in user_query.lower() and year > 2018:
         efficiency = predict_metric(user_query, city, year, property_type, df)
-        return f"The predicted property efficiency for {city} {property_type} in {year} is {efficiency}%"
+        return f"The predicted property efficiency for {city} {property_type} in {year} is {efficiency}%", year, metric_type
     # if no predictions applied, execute a normal SQL query
-    return get_sql_response(user_query, db)
+    sql_response = get_sql_response(user_query, db)
+    return sql_response, year, metric_type  # return both response and year
 
 
 def chatbot_response(user_query: str):  # function to return the chatbot_response
@@ -225,7 +244,7 @@ def chatbot_response(user_query: str):  # function to return the chatbot_respons
 if __name__ == "__main__":
     mysql_uri = mysql_uri  # use local database
     db = SQLDatabase.from_uri(mysql_uri)
-    df = pd.read_csv("D:/TaxQueryAI/datasets/transformed_data/Property-Tax-Erode.csv")  # load tax data
+    df = pd.read_csv("https://raw.githubusercontent.com/pratyush770/TaxQueryAI/master/datasets/transformed_data/Property-Tax-Erode.csv")  # load tax data
 
     # example: normal query
     user_query = "What was the tax collection in 2013-14 residential for Erode in ward 3?"

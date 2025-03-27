@@ -1,36 +1,48 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# TaxQuery AI
 
-## Getting Started
+TaxQuery AI is a Gen AI-powered property tax Q&A tool designed to help users query and analyze property tax data from seven cities in India. The project utilizes a MySQL database, AI-powered chatbot, and data analytics to provide insights and future predictions.
 
-First, run the development server:
+## Features
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+- **Q&A System**: Ask questions about property tax data (2013–2018) from Pune, Solapur, Chennai, Erode, Jabalpur, Thanjavur, and Tiruchirappalli.
+  
+- **24/7 Chatbot**: AI-powered chatbot to assist with tax-related queries.
+- **Analytics Dashboard**: Provides visual insights using cleaned datasets.
+- **Prediction Visualization**: Forecasts future tax trends and displays visual representations.
+- **Data Cleaning Pipeline**: Utilizes Azure services (Data Factory, Databricks, Data Lake) for data preprocessing.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Tech Stack
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+### Backend
+- **Python** (Flask, Streamlit, LangChain)
+  
+- **MySQL** (Database for storing property tax data)
+- **LangChain** (For AI-driven question answering)
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### Frontend
+- **Next.js** (React-based UI for interaction)
 
-## Learn More
+### Data Processing
+- **Azure Data Factory** (ETL pipeline)
+  
+- **Azure Databricks** (Data transformation)
+- **Azure Data Lake** (Storage for raw and cleaned data)
 
-To learn more about Next.js, take a look at the following resources:
+## Prerequisites
+- Python 3.x
+- Node.js and npm
+- MySQL Server
+- Azure account (for data processing)
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Deployment
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+TaxQuery AI is deployed on **Vercel** for seamless frontend hosting and efficient performance.
 
-## Deploy on Vercel
+You can access the live application here: **[TaxQueryAI](https://taxqueryai.vercel.app/)**
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Usage
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- Access the chatbot via the UI to ask property tax-related questions.
+  
+- View analytical insights and predictions on the dashboard.
+- Query the database directly using natural language.

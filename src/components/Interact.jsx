@@ -58,7 +58,7 @@ const Interact = () => {
         setResponseLoading(true);
 
         try {
-            const response = await fetch('https://taxqueryai.onrender.com/api/get_sql_query', {
+            const response = await fetch('https://pratyush770.pythonanywhere.com/api/get_sql_query', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ query: previousQuery, last_response: messages[messages.length - 1]?.text }) // Send last AI response
@@ -81,7 +81,7 @@ const Interact = () => {
         setResponseLoading(true);
 
         try {
-            const response = await fetch('https://taxqueryai.onrender.com/api/get_breakdown', {
+            const response = await fetch('https://pratyush770.pythonanywhere.com/api/get_breakdown', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ query: previousQuery, last_response: messages[messages.length - 1]?.text })
@@ -103,7 +103,7 @@ const Interact = () => {
         // ...same as before...
         userQuery = userQuery.trim().toLowerCase();
 
-        const welcomeMessages = new Set(["hi", "hello", "how are you?", "hey", "hey there"]);
+        const welcomeMessages = new Set(["hi","hii", "hello", "how are you?", "hey", "hey there"]);
         const politeMessages = new Set(["thanks", "thank you", "thx", "appreciate it", "ty", "okay thanks", "thnx", "okay thank you"]);
         const queryKeywords = ["give me sql", "provide sql", "show sql", "fetch sql", "generate sql", "sql query", "give me query", "give me the sql query"];
         const cityKeywords = ["cities", "tables", "database", "available", "names"];
@@ -150,7 +150,7 @@ const Interact = () => {
         setResponseLoading(true);
 
         try {
-            const response = await fetch('https://taxqueryai.onrender.com/api/get_response', {
+            const response = await fetch('https://pratyush770.pythonanywhere.com/api/get_response', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ query: message })

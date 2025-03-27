@@ -39,9 +39,8 @@ def api_get_response():
     if c:
         df_path = f"https://raw.githubusercontent.com/pratyush770/TaxQueryAI/master/datasets/transformed_data/Property-Tax-{c}.csv"
         df = pd.read_csv(df_path)  # load CSV from GitHub
-    ai_response = get_response(user_query, get_db(), c, ptype, y, df)
-
-    return jsonify({"response": ai_response})
+    ai_response, year, metric = get_response(user_query, get_db(), c, ptype, y, df)
+    return jsonify({"year": year, "response": ai_response, metric: metric})
 
 
 @app.route('/api/get_sql_query', methods=['POST'])
@@ -101,4 +100,5 @@ def api_get_ai_response():
 
 if __name__ == '__main__':
     db = get_db()  # initialize the database when the app starts
+    # app.run(port=3000, debug=True)
     app.run(host="0.0.0.0", port=8080)
