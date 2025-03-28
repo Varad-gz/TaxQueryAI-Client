@@ -22,7 +22,13 @@ const MessageContainer = ({ messages, ref, loading, messagesType }) => {
                 messagesType === 1 ?
                     <div className='w-full h-full flex flex-col justify-center items-center text-gray-600 font-bold'>
                         <MdRealEstateAgent className='text-[60px] text-primaryAccent' />
-                        <div className='text-sm sm:text-md md:text-xl select-none mt-[20px]'>
+                        <div className='text-5xl text-primaryAccent select-none'>
+                            TaxQueryAI
+                        </div>
+                        <div className='text-gray-500 text-sm sm:text-md md:text-xl mt-[20px] select-none'>
+                            MySQL Database Question & Answer Tool
+                        </div>
+                        <div className='text-gray-500 text-sm sm:text-md md:text-xl text-center'>
                             Start by asking: What are the possible questions I can ask?
                         </div>
                     </div> :

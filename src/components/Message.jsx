@@ -17,6 +17,7 @@ const Message = ({ type, children, isFirst }) => {
         1: 'bg-primaryAccent text-white rounded-sm w-full text-base px-5 py-5',
         2: 'border-t-2 border-b-2 border-[#EFEFEF] text-zinc-600 w-full text-base px-5 py-5',
         3: 'bg-primaryAccent text-white rounded-lg rounded-br-none w-fit ml-auto text-sm px-2.5 py-2.5',
+        // 3: 'bg-primaryAccent text-white rounded-lg w-full text-sm px-2.5 py-2.5',
         4: 'text-gray-600 mr-auto text-sm px-2.5 py-2.5',
         default: 'bg-primaryAccent text-white rounded-sm text-sm'
     };
@@ -64,7 +65,7 @@ const Message = ({ type, children, isFirst }) => {
             )}
 
             {/* Wrap ReactMarkdown in a div and apply styling there */}
-            <div className='font-semibold'>
+            <div className={`font-semibold`}>
                 <ReactMarkdown
                     components={{
                         pre: ({ node, ...props }) => (

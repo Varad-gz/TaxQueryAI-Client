@@ -7,6 +7,7 @@ import { IoMdAnalytics } from "react-icons/io";
 import { IoMdLogOut } from "react-icons/io";
 import { FaDatabase } from "react-icons/fa";
 import { MdAutoGraph } from "react-icons/md";
+import { SiHomeadvisor } from "react-icons/si";
 
 import { signOut } from 'next-auth/react';
 import ProfileLink from './ProfileLink';
@@ -24,6 +25,11 @@ const Navbar = () => {
                 </div>
                 <div className='h-full flex flex-col items-center text-[35px]'>
                     <div className='flex flex-col space-y-5'>
+                        <Tooltip text="Interact">
+                            <Link href='/interact' className='flex items-center hover:text-primaryAccent active:text-primaryAccent focus:text-primaryAccent outline-0 hover:scale-110 transition ease-in-out delay-75'>
+                                <SiHomeadvisor />
+                            </Link>
+                        </Tooltip>
                         <Tooltip text="Analytics Dashboard">
                             <Link href='/dashboard' className='flex items-center hover:text-primaryAccent active:text-primaryAccent focus:text-primaryAccent outline-0 hover:scale-110 transition ease-in-out delay-75'>
                                 <IoMdAnalytics />
