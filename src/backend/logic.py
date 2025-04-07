@@ -37,8 +37,29 @@ def get_schema(db: SQLDatabase):
     return SCHEMA_CACHE
 
 
-def get_sql_chain(db: SQLDatabase):  # function to get sql query
-    template = """
+def get_sql_chain(db: SQLDatabase, user_query: str):  # function to get sql query 
+    if ("total" in user_query.lower() or "all" in user_query.lower()) and \
+        ("tax demand" in user_query.lower() or "tax collection" in user_query.lower()):
+        template = """
+            Based on the table schema below, write only a SQL query that would answer the user's question.
+            Don't provide any extra information other than the sql query.
+            {schema}
+
+            Rule:
+            - If the question contains the words "total" or "all," group the results by either `Ward_Name` or `Ward_No` (whichever is relevant).
+
+            For example: 
+            Question: "What was the total tax collection in 2013-14 residential in Pune city?"
+            SQL Query: SELECT Ward_Name, SUM(Tax_Collection_Cr_2013_14_Residential) AS total_tax_collected FROM pune GROUP BY Ward_Name;
+            Question: "What was the total tax demand in 2015-16 commercial in Thanjavur city?"
+            SQL Query: SELECT Ward_No, SUM(Tax_Demand_Cr_2015_16_Commercial) AS total_tax_demand FROM thanjavur GROUP BY Ward_No;
+            
+            Your turn:
+            Question: {question}
+            SQL Query:
+        """
+    else:
+        template = """
         Based on the table schema below, write only a SQL query that would answer the user's question.
         Don't provide any extra information other than the sql query.
         {schema}
@@ -46,8 +67,8 @@ def get_sql_chain(db: SQLDatabase):  # function to get sql query
         For example: 
         Question: "How many rows are there in the pune table?"
         SQL Query: SELECT COUNT(Ward_Name) AS ward_count FROM pune;
-        Question: What was the total property tax collection in 2013-14 residential for aundh in pune city?
-        SQL Query: SELECT SUM(Tax_Collection_Cr_2013_14_Residential) AS total_tax_collected FROM pune WHERE Ward_Name = "Aundh";
+        Question: What was the tax demand in 2015-16 commercial for bhavani in solapur city?
+        SQL Query: SELECT Tax_Demand_Cr_2015_16_Commercial AS total_tax_demand FROM solapur WHERE Ward_Name = "Bhavani";
         Question: What was the property efficiency for the year 2015-16 commercial for Chennai?
         SQL Query: SELECT ROUND((SUM(Tax_Collection_Cr_2015_16_Commercial) / SUM(Tax_Demand_Cr_2015_16_Commercial)) * 100, 2) AS property_efficiency_percent FROM chennai;
         Question: What was the property efficiency for pune from 2013-18 commercial?
@@ -77,27 +98,47 @@ def get_prediction_response(user_query: str, city: str, property_type: str, year
     if prediction:
         if "efficiency" in user_query.lower():  # check for property efficiency query
             efficiency = round((prediction['predicted_collection'] / prediction['predicted_demand']) * 100, 2)
-            return f"The predicted property efficiency for {city} {property_type} in {year} is {efficiency}%"
-        elif "demand" in user_query.lower():
-            return f"The predicted tax demand for {city} {property_type} in {year} is {prediction['predicted_demand']} Cr"
-        elif "collection" in user_query.lower():
-            return f"The predicted tax collection for {city} {property_type} in {year} is {prediction['predicted_collection']} Cr"
+            return f"The predicted property efficiency for {city} {property_type} in {year} is {efficiency}%", efficiency
+        elif "gap" in user_query.lower():  # check for collection gap query
+            gap = round((prediction['predicted_demand'] - prediction['predicted_collection']), 2)
+            return f"The predicted collection gap for {city} {property_type} in {year} is {gap} Cr", gap
+        elif "demand" in user_query.lower():  # check for tax demand query
+            demand = round(prediction['predicted_demand'],2)
+            return f"The predicted tax demand for {city} {property_type} in {year} is {demand} Cr", demand
+        elif "collection" in user_query.lower():  # check for tax demand query
+            collection = round(prediction['predicted_collection'], 2)
+            return f"The predicted tax collection for {city} {property_type} in {year} is {collection} Cr", collection
         else:
             return "Please specify whether you want the tax collection or demand prediction."
-    return None
+    return None, None
 
 
 def get_sql_response(user_query: str, db: SQLDatabase):
-    sql_chain = get_sql_chain(db)  # sql chain for other queries
-    template = """
-       Convert the SQL response into a natural language response:
-       {schema}
+    sql_chain = get_sql_chain(db, user_query)  # sql chain for other queries
+    total = None
+    if "total" in user_query.lower() or "all" in user_query.lower():
+        detailed_breakdown = get_response_groupby(user_query, db)
+        total = detailed_breakdown.get("Total", None)
+        template = """
+        Convert the SQL response into a natural language response.
+        {schema}
 
-       Question: {question}
-       SQL Query: {query}
-       SQL Response: {response}
-       Natural Language Response (check if response is related to a property efficiency or counting entries, if neither, append " crore" at the end):
-    """
+        Question: {question}
+        SQL Query: {query}
+        SQL Response: {response}
+        Total: {total}
+        Natural Language Response: Generate a response using the total value ({total} crore) and the context of the question.
+        """
+    else:
+        template = """
+        Convert the SQL response into a natural language response.
+        {schema}
+
+        Question: {question}
+        SQL Query: {query}
+        SQL Response: {response}
+        Natural Language Response (check if response is related to a property efficiency or counting entries, if neither, append " crore" at the end):
+        """
     prompt = ChatPromptTemplate.from_template(template)  # template to get the natural language response
 
     chain = (
@@ -111,7 +152,8 @@ def get_sql_response(user_query: str, db: SQLDatabase):
     )
 
     return chain.invoke({
-        "question": user_query
+        "question": user_query,
+        "total": total 
     })
 
 
@@ -138,7 +180,7 @@ def extract_query_info(user_query):  # function to extract city, property type, 
 
 
 def give_breakdown(user_query: str, response: str, db: SQLDatabase, is_prediction: bool):
-    sql_query = get_sql_chain(db).invoke({"question": user_query})  # get SQL query
+    sql_query = get_sql_chain(db, user_query).invoke({"question": user_query})  # get SQL query
     city, property_type, selected_year = extract_query_info(user_query)  # extract city, property type, and year from the query
 
     if is_prediction:  # for future prediction
@@ -192,7 +234,7 @@ def give_breakdown(user_query: str, response: str, db: SQLDatabase, is_predictio
 
 
 def generate_sql_query(db, question):
-    return get_sql_chain(db).invoke({"question": question})
+    return get_sql_chain(db, question).invoke({"question": question})
 
 
 def extract_metric_type(user_query: str):
@@ -206,27 +248,52 @@ def extract_metric_type(user_query: str):
     elif "property efficiency" in user_query:
         return "property efficiency"
     else:
-        return "unknown"  # Default if no known type is found
+        return "unknown"  # default if no known type is found
     
-    
-def get_response(user_query: str, db: SQLDatabase, city: str, property_type: str, year: int,
-                 df: pd.DataFrame):
+
+def get_response_groupby(user_query: str, db: SQLDatabase):
+    if "total" in user_query.lower() or "all" in user_query.lower():
+        sql_query = get_sql_chain(db, user_query).invoke({"question": user_query})
+        detailed_data = pd.read_sql(sql_query, db._engine)
+        ward_column = "Ward_Name" if "Ward_Name" in sql_query else "Ward_No"
+        if ward_column in detailed_data.columns:  # ensure the ward column is treated as a string
+            detailed_data[ward_column] = detailed_data[ward_column].astype(str)
+        match = re.search(r'SELECT\s+.*\s+AS\s+(\w+)', sql_query, re.IGNORECASE)
+        value_column = match.group(1) if match else None
+        if ward_column and value_column:
+            detailed_breakdown = {
+                row[ward_column]: row[value_column] for _, row in detailed_data.iterrows()
+            }
+            total_value = sum(detailed_breakdown.values())  # compute the total value
+            detailed_breakdown["Total"] = total_value  # add the total to the breakdown dictionary
+            return detailed_breakdown
+    return None
+
+
+def get_response(user_query: str, db: SQLDatabase, city: str, property_type: str, year: int, df: pd.DataFrame):
     metric_type = extract_metric_type(user_query)  # extract metric type
+    value = None  # initialize a variable to store the computed/predicted value
     # check for a prediction-based response
-    prediction_response = get_prediction_response(user_query, city, property_type, year, df)
+    prediction_response, v = get_prediction_response(user_query, city, property_type, year, df)
+    value = v
     if prediction_response:
-        return prediction_response, year, metric_type  # if there's a prediction, return it immediately
+        return prediction_response, year, metric_type, value  # if there's a prediction, return it immediately
     # handle collection gap queries
     if "collection gap" in user_query.lower() and year > 2018:
         gap = predict_metric(user_query, city, year, property_type, df)
-        return f"The predicted collection gap for {city} {property_type} in {year} is {gap} Cr", year, metric_type
+        value = gap  # store the gap value
+        return f"The predicted collection gap for {city} {property_type} in {year} is {gap} Cr", year, metric_type, value
     # handle property efficiency queries
     if "property efficiency" in user_query.lower() and year > 2018:
         efficiency = predict_metric(user_query, city, year, property_type, df)
-        return f"The predicted property efficiency for {city} {property_type} in {year} is {efficiency}%", year, metric_type
+        value = efficiency  # store the efficiency value
+        return f"The predicted property efficiency for {city} {property_type} in {year} is {efficiency}%", year, metric_type, value
     # if no predictions applied, execute a normal SQL query
-    sql_response = get_sql_response(user_query, db)
-    return sql_response, year, metric_type  # return both response and year
+    sql_response = get_sql_response(user_query, db)  # get response
+    numeric_value = re.search(r'(\d+\.\d+)', sql_response)
+    if numeric_value:
+        value = float(numeric_value.group())  # convert extracted value to float
+    return sql_response, year, metric_type, value  
 
 
 def chatbot_response(user_query: str):  # function to return the chatbot_response
@@ -242,19 +309,21 @@ def chatbot_response(user_query: str):  # function to return the chatbot_respons
 
 
 if __name__ == "__main__":
-    mysql_uri = mysql_uri  # use local database
+    mysql_uri = mysql_uri
     db = SQLDatabase.from_uri(mysql_uri)
-    df = pd.read_csv("https://raw.githubusercontent.com/pratyush770/TaxQueryAI/master/datasets/transformed_data/Property-Tax-Erode.csv")  # load tax data
+    df = pd.read_csv("https://raw.githubusercontent.com/pratyush770/TaxQueryAI/master/datasets/transformed_data/Property-Tax-Tiruchirappalli.csv")  # load tax data
 
     # example: normal query
-    user_query = "What was the tax collection in 2013-14 residential for Erode in ward 3?"
-    city = "Erode"
-    property_type = "Residential"
-    year = 2013
-    sql_query = get_sql_chain(db).invoke({"question": user_query})  # get sql query
+    user_query = "What was the total tax demand for the year 2016-17 commercial for Tiruchirappalli?"
+    city = "Tiruchirappalli"
+    property_type = "Commercial"
+    year = 2016
+    sql_query = get_sql_chain(db, user_query).invoke({"question": user_query})  # get sql query
     print(sql_query)
     response = get_response(user_query, db, city, property_type, year, df)  # get natural language response
     print(response)
+    detailed_breakdown = get_response_groupby(user_query, db)
+    print(detailed_breakdown)
 
     # example: user requests breakdown
     user_query_breakdown = "Give me the breakdown"
