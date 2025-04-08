@@ -120,11 +120,11 @@ const Interact = () => {
             return `
   The possible questions you can ask are:
   * What was the total tax collection in 2013-14 residential for Pune city?
-  * What was the total tax demand for the year 2015-16 commercial for Chennai?
+  * What was the total tax demand for the year 2015-16 residential for Jabalpur?
   * What was the collection gap for the year 2016-17 residential for Thanjavur?
   * What was the collection gap for Solapur from 2013-18 residential?
-  * What will be the tax demand for the year 2025 in Pune for residential?
-  * What will be the property efficiency (residential) for the year 2019 in Pune?
+  * What will be the tax demand for the year 2025 in Tiruchirappalli for residential?
+  * What will be the property efficiency (residential) for the year 2019 in Erode?
 `
         }
         if (goodbyeMessages.has(userQuery)) return "Goodbye! Catch you later.";
