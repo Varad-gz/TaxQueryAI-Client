@@ -8,14 +8,15 @@ import Tooltip from '@/components/Tooltop';
 import { motion, AnimatePresence } from 'framer-motion';
 import { SiHelpscout } from "react-icons/si";
 import useIsMobile from '@/hooks/useIsMobile';
-
+import { useGeneralMessages } from '@/contexts/GeneralMessageContext';
 
 const Interact = () => {
     const [queryBoxHeight, setQueryBoxHeight] = useState(44);
     const [isAIVisible, setIsAIVisible] = useState(false);
-    const [messages, setMessages] = useState([]);
     const [lastUserQuery, setLastUserQuery] = useState(null);
     const [responseLoading, setResponseLoading] = useState(false);
+
+    const { generalMessages, setGeneralMessages } = useGeneralMessages();
 
     const isMobile = useIsMobile();
 
@@ -33,7 +34,7 @@ const Interact = () => {
 
     useEffect(() => {
         scrollToBottom();
-    }, [messages, responseLoading]);
+    }, [generalMessages, responseLoading]);
 
     useEffect(() => {
         const updateHeight = () => {
@@ -61,7 +62,7 @@ const Interact = () => {
             const response = await fetch('https://pratyush770.pythonanywhere.com/api/get_sql_query', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ query: previousQuery, last_response: messages[messages.length - 1]?.text }) // Send last AI response
+                body: JSON.stringify({ query: previousQuery, last_response: generalMessages[generalMessages.length - 1]?.text }) // Send last AI response
             });
 
             const data = await response.json();
@@ -84,7 +85,7 @@ const Interact = () => {
             const response = await fetch('https://pratyush770.pythonanywhere.com/api/get_breakdown', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ query: previousQuery, last_response: messages[messages.length - 1]?.text })
+                body: JSON.stringify({ query: previousQuery, last_response: generalMessages[generalMessages.length - 1]?.text })
             });
 
             const data = await response.json();
@@ -103,7 +104,7 @@ const Interact = () => {
         // ...same as before...
         userQuery = userQuery.trim().toLowerCase();
 
-        const welcomeMessages = new Set(["hi","hii", "hello", "how are you?", "hey", "hey there"]);
+        const welcomeMessages = new Set(["hi", "hii", "hello", "how are you?", "hey", "hey there"]);
         const politeMessages = new Set(["thanks", "thank you", "thx", "appreciate it", "ty", "okay thanks", "thnx", "okay thank you"]);
         const queryKeywords = ["give me sql", "provide sql", "show sql", "fetch sql", "generate sql", "sql query", "give me query", "give me the sql query"];
         const cityKeywords = ["cities", "tables", "database", "available", "names"];
@@ -137,11 +138,11 @@ const Interact = () => {
         // ...same as before...
         if (!message.trim()) return;
 
-        setMessages((prevMessages) => [...prevMessages, { text: message, type: 'user' }]);
+        setGeneralMessages((prevMessages) => [...prevMessages, { text: message, type: 'user' }]);
 
         const edgeCaseResponse = await handleEdgeCases(message);
         if (edgeCaseResponse !== null) {
-            setMessages((prevMessages) => [...prevMessages, { text: edgeCaseResponse, type: 'ai' }]);
+            setGeneralMessages((prevMessages) => [...prevMessages, { text: edgeCaseResponse, type: 'ai' }]);
             return;
         }
 
@@ -159,13 +160,19 @@ const Interact = () => {
             const data = await response.json();
             setResponseLoading(false);
             const aiResponse = data.response || "Sorry, I couldn't understand the question.";
+            const detailedBreakdown = data.detailed_breakdown;
+            const year = data.year;
 
-            setMessages((prevMessages) => [...prevMessages, { text: aiResponse, type: 'ai' }]);
+            const keysToExtract = ["tax demand", "property efficiency", "tax collection", "collection gap"];
+            const extracted = Object.entries(data).filter(([key]) => keysToExtract.includes(key));
+            const [title, value] = extracted.length ? extracted[0] : [null, null];
+
+            setGeneralMessages((prevMessages) => [...prevMessages, { text: aiResponse, detailedBreakdown, year, title, value, type: 'ai' }]);
 
         } catch (error) {
             console.error("Error fetching response:", error);
             setResponseLoading(false);
-            setMessages((prevMessages) => [...prevMessages, { text: "I couldn't find anything related to that. Can you please rephrase your query?", type: 'ai' }]);
+            setGeneralMessages((prevMessages) => [...prevMessages, { text: "I couldn't find anything related to that. Can you please rephrase your query?", type: 'ai' }]);
         }
     };
 
@@ -178,7 +185,7 @@ const Interact = () => {
                 <div className={`${isMobile ? 'w-full' : 'w-[70%]'} ${(isAIVisible && isMobile) && 'hidden'} h-full`}>
                     <MessageContainer
                         ref={messagesEndRef}
-                        messages={messages}
+                        messages={generalMessages}
                         loading={responseLoading}
                         messagesType={1}
                     />
@@ -192,13 +199,7 @@ const Interact = () => {
                             exit={!isMobile ? { scale: 0, originX: 1, originY: 1 } : false}
                             transition={!isMobile ? { duration: 0.5, ease: "easeInOut" } : false}
                         >
-                            <AIChatBot
-                                onSendMessage={handleUserMessage}
-                                messages={messages}
-                                loading={responseLoading}
-                                toggleAIVisibility={toggleAIVisibility}
-                                isMobile={isMobile}
-                            />
+                            <AIChatBot />
                         </motion.div>
                     )}
                 </AnimatePresence>

@@ -15,7 +15,7 @@ const MessageContainer = ({ messages, ref, loading, messagesType }) => {
                         type={msg.type === 'user' ? (messagesType === 1 ? 1 : 3) : (messagesType === 1 ? 2 : 4)}
                         isFirst={index === 0}
                     >
-                        {msg.text}
+                        {msg}
                     </Message>
                 ))
             ) : (

@@ -7,6 +7,7 @@ import { MdRealEstateAgent } from "react-icons/md";
 import { MdContentCopy } from "react-icons/md";
 
 import { AnimatePresence, motion } from 'framer-motion';
+import { KPIIndicator, TaxBarChart } from './Chart';
 
 const Message = ({ type, children, isFirst }) => {
 
@@ -33,7 +34,7 @@ const Message = ({ type, children, isFirst }) => {
     const mainDivStyle = styleTypes[type] || styleTypes.default;
 
     const handleCopyToClipboard = () => {
-        navigator.clipboard.writeText(children).then(() => {
+        navigator.clipboard.writeText(children.text).then(() => {
             setCopiedMessage(1)
             setCopied(true)
             setTimeout(() => {
@@ -88,7 +89,7 @@ const Message = ({ type, children, isFirst }) => {
                         ),
                     }}
                 >
-                    {children}
+                    {children.text}
                 </ReactMarkdown>
             </div>
             <div className='flex items-end space-x-2'>
@@ -109,6 +110,29 @@ const Message = ({ type, children, isFirst }) => {
                     }
                 </AnimatePresence>
             </div>
+            {type === 2 &&
+                (
+                    <div className='pt-4'>
+                        {(children.title) && (
+                            <div>
+                                <KPIIndicator
+                                    title={children.title}
+                                    year={children.year}
+                                    value={children.value}
+                                    isCurrency={children.title === 'property efficiency' ? false : true}
+                                    isPredicted={children.text.toLowerCase().includes("predicted")}
+                                />
+                            </div>
+                        )}
+
+                        {(children.detailedBreakdown && children.detailedBreakdown !== null && !children.detailedBreakdown.message) && (
+                            <div className='pt-4'>
+                                <TaxBarChart rawData={children.detailedBreakdown} />
+                            </div>
+                        )}
+                    </div>
+                )
+            }
         </motion.div >
     );
 }

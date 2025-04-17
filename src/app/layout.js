@@ -4,6 +4,9 @@ import { Space_Grotesk } from 'next/font/google';
 import "./globals.css";
 
 import { AuthProvider } from "@/contexts/AuthContext";
+import { GeneralMessageProvider } from "@/contexts/GeneralMessageContext";
+import { AIMessageProvider } from "@/contexts/AIMessageContext";
+
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -42,7 +45,11 @@ export default function RootLayout({ children }) {
           toastClassName='custom-toast'
         />
         <AuthProvider>
-          {children}
+          <GeneralMessageProvider>
+            <AIMessageProvider>
+              {children}
+            </AIMessageProvider>
+          </GeneralMessageProvider>
         </AuthProvider>
       </body>
     </html>

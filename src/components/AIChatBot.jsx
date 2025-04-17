@@ -3,13 +3,15 @@
 import React, { useState, useRef, useEffect } from 'react';
 import MessageContainer from './MessageContainer';
 import QueryTextBox from './QueryTextBox';
+import { useAIMessages } from '@/contexts/AIMessageContext';
 
 const AIChatBot = () => {
-    const [messages, setMessages] = useState([]);
     const [loading, setLoading] = useState(false);
     const [queryBoxHeight, setQueryBoxHeight] = useState(44);
     const queryBoxRef = useRef(null);
     const messagesEndRef = useRef(null);
+
+    const { aiMessages, setAIMessages } = useAIMessages();
 
     const scrollToBottom = () => {
         messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -17,7 +19,7 @@ const AIChatBot = () => {
 
     useEffect(() => {
         scrollToBottom();
-    }, [messages, loading]);
+    }, [aiMessages, loading]);
 
     useEffect(() => {
         const updateHeight = () => {
@@ -39,7 +41,7 @@ const AIChatBot = () => {
     const handleSendMessage = async (userMessage) => {
         if (!userMessage.trim()) return;
 
-        setMessages((prevMessages) => [...prevMessages, { text: userMessage, type: 'user' }]);
+        setAIMessages((prevMessages) => [...prevMessages, { text: userMessage, type: 'user' }]);
         setLoading(true);
 
         try {
@@ -52,10 +54,10 @@ const AIChatBot = () => {
             });
 
             const data = await response.json();
-            setMessages((prevMessages) => [...prevMessages, { text: data.response, type: 'ai' }]);
+            setAIMessages((prevMessages) => [...prevMessages, { text: data.response, type: 'ai' }]);
         } catch (error) {
             console.error("Error fetching AI response:", error);
-            setMessages((prevMessages) => [
+            setAIMessages((prevMessages) => [
                 ...prevMessages,
                 { text: "I couldn't find anything related to that. Can you please rephrase your query?", type: 'ai' }
             ]);
@@ -75,7 +77,7 @@ const AIChatBot = () => {
             >
                 <MessageContainer
                     ref={messagesEndRef}
-                    messages={messages}
+                    messages={aiMessages}
                     loading={loading}
                     messagesType={2}
                 />
