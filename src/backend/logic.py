@@ -13,14 +13,14 @@ load_dotenv()  # load the environment variables
 sec_key = os.getenv("GROQ_API_KEY")
 mysql_uri = os.getenv("MYSQL_URI")
 
-model_name1 = "qwen-2.5-32b"  # name of model used
+model_name1 = "meta-llama/llama-4-scout-17b-16e-instruct"  # name of model used
 llm = ChatGroq(
     model_name=model_name1,
     temperature=0.1,  # more accurate results
     groq_api_key=sec_key
 )
 
-model_name = "llama-3.2-1b-preview"  # name of model used
+model_name = "allam-2-7b"  # name of model used
 llm1 = ChatGroq(  # used only for breakdown function to optimize token usage
     model_name=model_name,
     temperature=0.1,  # more accurate results
@@ -38,6 +38,8 @@ def get_schema(db: SQLDatabase):
 
 
 def get_sql_chain(db: SQLDatabase, user_query: str):  # function to get sql query 
+    c, ptype, y = extract_query_info(user_query)
+    group_column = "Ward_Name" if c in ['Pune', 'Solapur'] else "Ward_No"
     if ("total" in user_query.lower() or "all" in user_query.lower()) and \
         ("tax demand" in user_query.lower() or "tax collection" in user_query.lower()):
         template = """
@@ -46,14 +48,18 @@ def get_sql_chain(db: SQLDatabase, user_query: str):  # function to get sql quer
             {schema}
 
             Rule:
-            - If the question contains the words "total" or "all," group the results by either `Ward_Name` or `Ward_No` (whichever is relevant).
+            - If the question contains the words "total" or "all," group the results by `{group_column}`.
 
-            For example: 
+            For example:
             Question: "What was the total tax collection in 2013-14 residential in Pune city?"
             SQL Query: SELECT Ward_Name, SUM(Tax_Collection_Cr_2013_14_Residential) AS total_tax_collected FROM pune GROUP BY Ward_Name;
+            Question: "What was the total tax demand in 2015-16 commercial in Solapur city?"
+            SQL Query: SELECT Ward_Name, SUM(Tax_Collection_Cr_2015_16_Commercial) AS total_tax_demand FROM solapur GROUP BY Ward_Name;
             Question: "What was the total tax demand in 2015-16 commercial in Thanjavur city?"
             SQL Query: SELECT Ward_No, SUM(Tax_Demand_Cr_2015_16_Commercial) AS total_tax_demand FROM thanjavur GROUP BY Ward_No;
-            
+            Question: "What was the total tax demand for the year 2015-16 residential for Jabalpur?"
+            SQL Query: SELECT Ward_No, SUM(Tax_Demand_Cr_2015_16_Residential) AS total_tax_demand FROM jabalpur GROUP BY Ward_No;
+
             Your turn:
             Question: {question}
             SQL Query:
@@ -64,27 +70,27 @@ def get_sql_chain(db: SQLDatabase, user_query: str):  # function to get sql quer
         Don't provide any extra information other than the sql query.
         {schema}
 
-        For example: 
+        For example:
         Question: "How many rows are there in the pune table?"
         SQL Query: SELECT COUNT(Ward_Name) AS ward_count FROM pune;
         Question: What was the tax demand in 2015-16 commercial for bhavani in solapur city?
-        SQL Query: SELECT Tax_Demand_Cr_2015_16_Commercial AS total_tax_demand FROM solapur WHERE Ward_Name = "Bhavani";
+        SQL Query: SELECT SUM(Tax_Demand_Cr_2015_16_Commercial) AS total_tax_demand FROM solapur WHERE Ward_Name = "Bhavani";
         Question: What was the property efficiency for the year 2015-16 commercial for Chennai?
         SQL Query: SELECT ROUND((SUM(Tax_Collection_Cr_2015_16_Commercial) / SUM(Tax_Demand_Cr_2015_16_Commercial)) * 100, 2) AS property_efficiency_percent FROM chennai;
         Question: What was the property efficiency for pune from 2013-18 commercial?
         SQL Query: SELECT ROUND((SUM(Tax_Collection_Cr_2013_14_Commercial) + SUM(Tax_Collection_Cr_2014_15_Commercial) + SUM(Tax_Collection_Cr_2015_16_Commercial) + SUM(Tax_Collection_Cr_2016_17_Commercial) + SUM(Tax_Collection_Cr_2017_18_Commercial)) / (SUM(Tax_Demand_Cr_2013_14_Commercial) + SUM(Tax_Demand_Cr_2014_15_Commercial) + SUM(Tax_Demand_Cr_2015_16_Commercial) + SUM(Tax_Demand_Cr_2016_17_Commercial) + SUM(Tax_Demand_Cr_2017_18_Commercial)) * 100, 2) AS property_efficiency_percent FROM pune;
-        Question: What was the collection gap for the year 2016-17 residential for Thanjavur?
-        SQL Query: SELECT ROUND(SUM(Tax_Demand_Cr_2016_17_Residential) - SUM(Tax_Collection_Cr_2016_17_Residential), 2) AS collection_gap_2016_17 FROM thanjavur;
-        Question: What was the collection gap for solapur from 2013-18 residential?
-        SQL Query: SELECT ROUND((SUM(Tax_Demand_Cr_2013_14_Residential) + SUM(Tax_Demand_Cr_2014_15_Residential) + SUM(Tax_Demand_Cr_2015_16_Residential) + SUM(Tax_Demand_Cr_2016_17_Residential) + SUM(Tax_Demand_Cr_2017_18_Residential)) - (SUM(Tax_Collection_Cr_2013_14_Residential) + SUM(Tax_Collection_Cr_2014_15_Residential) + SUM(Tax_Collection_Cr_2015_16_Residential) + SUM(Tax_Collection_Cr_2016_17_Residential) + SUM(Tax_Collection_Cr_2017_18_Residential)), 2) AS collection_gap FROM solapur;
-        
+        Question: What was the collection gap for the year 2016-17 residential for Jabalpur?
+        SQL Query: SELECT ROUND(SUM(Tax_Demand_Cr_2016_17_Residential) - SUM(Tax_Collection_Cr_2016_17_Residential), 2) AS collection_gap FROM jabalpur;
+        Question: What was the collection gap for Tiruchirappalli from 2013-18 residential?
+        SQL Query: SELECT ROUND((SUM(Tax_Demand_Cr_2013_14_Residential) + SUM(Tax_Demand_Cr_2014_15_Residential) + SUM(Tax_Demand_Cr_2015_16_Residential) + SUM(Tax_Demand_Cr_2016_17_Residential) + SUM(Tax_Demand_Cr_2017_18_Residential)) - (SUM(Tax_Collection_Cr_2013_14_Residential) + SUM(Tax_Collection_Cr_2014_15_Residential) + SUM(Tax_Collection_Cr_2015_16_Residential) + SUM(Tax_Collection_Cr_2016_17_Residential) + SUM(Tax_Collection_Cr_2017_18_Residential)), 2) AS collection_gap FROM tiruchirappalli;
+
         Your turn:
         Question: {question}
         SQL Query:
     """
     prompt = ChatPromptTemplate.from_template(template)
     return (
-            RunnablePassthrough.assign(schema=lambda _: get_schema(db))  # use cached schema
+            RunnablePassthrough.assign(schema=lambda _: get_schema(db), group_column=lambda _: group_column)  # use cached schema
             | prompt
             | llm.bind(stop=["\nSQLResult:"])
             | StrOutputParser()
