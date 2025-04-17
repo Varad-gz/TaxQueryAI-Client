@@ -119,7 +119,7 @@ const Message = ({ type, children, isFirst }) => {
                                     title={children.title}
                                     year={children.year}
                                     value={children.value}
-                                    isCurrency={children.title === 'property efficiency' ? false : true}
+                                    isCurrency={children.title === 'Property Efficiency' ? false : true}
                                     isPredicted={children.text.toLowerCase().includes("predicted")}
                                 />
                             </div>
@@ -127,7 +127,7 @@ const Message = ({ type, children, isFirst }) => {
 
                         {(children.detailedBreakdown && children.detailedBreakdown !== null && !children.detailedBreakdown.message) && (
                             <div className='pt-4'>
-                                <TaxBarChart rawData={children.detailedBreakdown} />
+                                <TaxBarChart rawData={children.detailedBreakdown} title={children.title} />
                             </div>
                         )}
                     </div>

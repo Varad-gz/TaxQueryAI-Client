@@ -167,7 +167,7 @@ const Interact = () => {
             const extracted = Object.entries(data).filter(([key]) => keysToExtract.includes(key));
             const [title, value] = extracted.length ? extracted[0] : [null, null];
 
-            setGeneralMessages((prevMessages) => [...prevMessages, { text: aiResponse, detailedBreakdown, year, title, value, type: 'ai' }]);
+            setGeneralMessages((prevMessages) => [...prevMessages, { text: aiResponse, detailedBreakdown, year, title: title.replace(/\w\S*/g, (txt) => txt.charAt(0).toUpperCase() + txt.substring(1)), value, type: 'ai' }]);
 
         } catch (error) {
             console.error("Error fetching response:", error);
