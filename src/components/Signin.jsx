@@ -67,7 +67,7 @@ const Signin = () => {
                             <input type='password' placeholder='Enter your password' onChange={(e) => setPassword(e.target.value)} required className='bg-gray-50 px-2.5 py-5 rounded-lg border-[1px] border-gray-200'></input>
                             <button type='submit' className='w-fit rounded-2xl border-[2px] px-5 py-2.5 mt-2.5 font-bold hover:bg-black hover:text-white active:bg-black active:text-white outline-0 focus:bg-black focus:text-white transition ease-in-out delay-75 cursor-pointer'>Sign in</button>
                         </form>
-                        <Link href='/forgot-password' className='text-lg hover:text-primaryAccent active:text-primaryAccent focus:text-primaryAccent outline-0'>Forgot Password</Link>
+                        {/* <Link href='/forgot-password' className='text-lg hover:text-primaryAccent active:text-primaryAccent focus:text-primaryAccent outline-0'>Forgot Password</Link> */}
                         <Link href='/signup' className='text-lg hover:text-primaryAccent active:text-primaryAccent focus:text-primaryAccent outline-0'>Don't have an account? Sign up</Link>
                         <div className='w-full my-5 flex items-center'>
                             <div className='bg-black rounded-l-full h-1 w-full'></div>
